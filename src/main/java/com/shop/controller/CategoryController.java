@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -15,7 +16,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.shop.dto.CategoryDTO;
 import com.shop.entities.Category;
+import com.shop.entities.Product;
 import com.shop.service.CategoryService;
+import com.shop.service.ProductService;
 import com.shop.utils.MessengerUtils;
 
 @RestController
@@ -24,6 +27,9 @@ public class CategoryController {
 	
 	@Autowired
 	private CategoryService categoryService;
+	
+	@Autowired
+	private ProductService prodcutService;
 	
 	//Get all categories
 	@GetMapping("all")
@@ -53,7 +59,7 @@ public class CategoryController {
 	
 	//Edit category
 	@PutMapping("{idCat}")
-	public ResponseEntity<CategoryDTO> delete(@PathVariable("idCat") int idCat, @RequestBody Category objCat){
+	public ResponseEntity<CategoryDTO> edit(@PathVariable("idCat") int idCat, @RequestBody Category objCat){
 		Category cat = categoryService.getCateogry(idCat);
 		if (cat == null) {
 			return new ResponseEntity<CategoryDTO>(HttpStatus.NOT_FOUND);
@@ -66,8 +72,34 @@ public class CategoryController {
 				CategoryDTO catDTO = new CategoryDTO("true", catEdited.getName());
 				return new ResponseEntity<CategoryDTO>(catDTO,HttpStatus.OK);
 			}
-			
-			
+		}
+	}
+	
+	//Delete category
+	@DeleteMapping("{idCat}")
+	public ResponseEntity<MessengerUtils> delete(@PathVariable("idCat") int idCat){
+		if (categoryService.getCateogry(idCat) == null) {
+			MessengerUtils msg = new MessengerUtils("false", "Not found category id " + idCat);
+			return new ResponseEntity<MessengerUtils>(msg, HttpStatus.NOT_FOUND);
+		} else {
+			if (prodcutService.getListProductByIdCategory(idCat).isEmpty()) {
+				categoryService.deleteCategory(idCat);
+				MessengerUtils msg = new MessengerUtils("true", "Deleted category id " + idCat);
+				return new ResponseEntity<MessengerUtils>(msg, HttpStatus.OK);
+			} else {
+				MessengerUtils msg = new MessengerUtils("false", "Can not delete category id " + idCat);
+				return new ResponseEntity<MessengerUtils>(msg, HttpStatus.NOT_ACCEPTABLE);
+			}
+		}
+	}
+	
+	@GetMapping("product/{idCat}")
+	public ResponseEntity<List<Product>> getListProductinCategory(@PathVariable("idCat") int idCat){
+		List<Product> listProduct = prodcutService.getListProductByIdCategory(idCat);
+		if (listProduct.isEmpty()) {
+			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+		} else {
+			return new ResponseEntity<List<Product>>(listProduct, HttpStatus.OK);
 		}
 	}
 	

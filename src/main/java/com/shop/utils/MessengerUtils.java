@@ -3,7 +3,7 @@ package com.shop.utils;
 public class MessengerUtils {
 	private String success;
 	private String message;
-
+	
 	public String getMessage() {
 		return message;
 	}
@@ -31,6 +31,7 @@ public class MessengerUtils {
 		this.success = success;
 		this.message = message;
 	}
+	
 
 	public MessengerUtils() {
 		super();

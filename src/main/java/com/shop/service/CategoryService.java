@@ -16,4 +16,7 @@ public interface CategoryService {
 	
 	//Edit category
 	Category editCategory(Category objCat);
+	
+	//Delete category by Id
+	void deleteCategory(int id);
 }
