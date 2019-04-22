@@ -24,4 +24,9 @@ public class AccountServiceImpl implements AccountService {
 		return accountRepo.save(objAccout);
 	}
 
+	@Override
+	public Account getAccountById(int id) {
+		return accountRepo.getOne(id);
+	}
+
 }

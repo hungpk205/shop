@@ -49,4 +49,9 @@ public class ProductServiceImpl implements ProductService {
 		return productRepo.getListProductByIdCategory(idCat);
 	}
 
+	@Override
+	public Product addOneProduct(Product objProduct) {
+		return productRepo.save(objProduct);
+	}
+
 }

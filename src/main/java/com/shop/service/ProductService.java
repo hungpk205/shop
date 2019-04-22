@@ -23,4 +23,6 @@ public interface ProductService {
 	
 	//Get list product in category by id category
 	List<Product> getListProductByIdCategory(int idCat);
+	
+	Product addOneProduct(Product objProduct);
 }
