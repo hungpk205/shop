@@ -158,7 +158,7 @@ public class ProductController {
 					//List<UploadFileResponse> listUpload = null;
 					//Upload image
 					String fileNamePicture = fileStorageService.storeFile(picture);
-					String fileDownloadURIPicture = ServletUriComponentsBuilder.fromCurrentContextPath().path("/downloadFile/").path(fileNamePicture).toUriString();
+					String fileDownloadURIPicture = ServletUriComponentsBuilder.fromCurrentContextPath().path("api/product/downloadFile/").path(fileNamePicture).toUriString();
 					UploadFileResponse file1 = new UploadFileResponse(fileNamePicture, fileDownloadURIPicture, picture.getContentType(), picture.getSize());
 					return file1;
 					//listUpload.add(file1);
