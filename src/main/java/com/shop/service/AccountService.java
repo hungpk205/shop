@@ -1,5 +1,7 @@
 package com.shop.service;
 
+import java.util.List;
+
 import com.shop.entities.Account;
 
 public interface AccountService {
@@ -11,4 +13,7 @@ public interface AccountService {
 	
 	//Get account by id
 	Account getAccountById(int id);
+	
+	//Get all account
+	List<Account> listAccount();
 }

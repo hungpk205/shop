@@ -1,5 +1,7 @@
 package com.shop.service.impl;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -27,6 +29,12 @@ public class AccountServiceImpl implements AccountService {
 	@Override
 	public Account getAccountById(int id) {
 		return accountRepo.getOne(id);
+	}
+
+	@Override
+	public List<Account> listAccount() {
+		List<Account> listAccount = accountRepo.findAll();
+		return listAccount;
 	}
 
 }

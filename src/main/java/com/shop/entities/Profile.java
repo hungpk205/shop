@@ -20,6 +20,9 @@ public class Profile {
 	@Column(name = "fullname")
 	private String fullname;
 	
+	@Column(name = "avatar")
+	private String avatar;
+	
 	@Column(name = "email")
 	private String email;
 	
@@ -44,6 +47,14 @@ public class Profile {
 
 	public String getFullname() {
 		return fullname;
+	}
+
+	public String getAvatar() {
+		return avatar;
+	}
+
+	public void setAvatar(String avatar) {
+		this.avatar = avatar;
 	}
 
 	public void setFullname(String fullname) {
@@ -74,21 +85,23 @@ public class Profile {
 		this.address = address;
 	}
 
-	public Profile(Integer id, String fullname, String email, String phone, String address) {
+	public Profile(Integer id, String fullname, String email, String phone, String address, String avatar) {
 		super();
 		this.id = id;
 		this.fullname = fullname;
 		this.email = email;
 		this.phone = phone;
 		this.address = address;
+		this.avatar = avatar;
 	}
 	
-	public Profile(String fullname, String email, String phone, String address) {
+	public Profile(String fullname, String email, String phone, String address, String avatar) {
 		super();
 		this.fullname = fullname;
 		this.email = email;
 		this.phone = phone;
 		this.address = address;
+		this.avatar = avatar;
 	}
 	
 
