@@ -11,17 +11,16 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.shop.dto.AccountDTO;
 import com.shop.entities.Account;
-import com.shop.entities.Permission;
 import com.shop.entities.Role;
 import com.shop.service.AccountService;
 
+@CrossOrigin(origins = "http://localhost:4200")
 @RestController
 @RequestMapping("api")
 public class LoginController {
 	@Autowired
 	private AccountService accountService;
 	
-	@CrossOrigin(origins = "http://localhost:4200")
 	@PostMapping("login")
 	public ResponseEntity<AccountDTO> login(@RequestBody Account objAccount){
 		//System.out.println(objAccount.getUsername() + " " + objAccount.getPassword());
