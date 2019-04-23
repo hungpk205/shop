@@ -27,7 +27,7 @@ public class CategoryServiceImpl implements CategoryService {
 	}
 
 	@Override
-	public Category getCateogry(int id) {
+	public Category getCateogryById(int id) {
 		return categoryRepo.getOne(id);
 	}
 
@@ -39,6 +39,11 @@ public class CategoryServiceImpl implements CategoryService {
 	@Override
 	public void deleteCategory(int id) {
 		categoryRepo.deleteById(id);
+	}
+
+	@Override
+	public Category getCategoryByName(String name) {
+		return categoryRepo.getCategoryByName(name);
 	}
 
 }

@@ -98,11 +98,11 @@ public class ProductController {
 										@RequestParam("img3") MultipartFile img3
 			){
 		//Check exit category by id
-		if (categoryService.getCateogry(objProduct.getCategory().getId()) != null) {
+		if (categoryService.getCateogryById(objProduct.getCategory().getId()) != null) {
 			Product newProduct = new Product();
 			//Get account by id
 			Account account = accountService.getAccountById(id_account);
-			Category category = categoryService.getCateogry(objProduct.getCategory().getId());
+			Category category = categoryService.getCateogryById(objProduct.getCategory().getId());
 			if (account == null) {
 				//Set account post
 				newProduct.setAccount(account);

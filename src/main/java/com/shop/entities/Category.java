@@ -22,6 +22,10 @@ public class Category {
 	@Column(name = "name")
 	private String name;
 
+	@Column(name = "image")
+	private String image;
+	
+	
 	@OneToMany(mappedBy = "category")
 	private Set<Product> products = new HashSet<>();
 	
@@ -41,12 +45,25 @@ public class Category {
 	public void setName(String name) {
 		this.name = name;
 	}
+	
+	
 
-	public Category(Integer id, String name) {
+	public String getImage() {
+		return image;
+	}
+
+	public void setImage(String image) {
+		this.image = image;
+	}
+
+	public Category(Integer id, String name, String image) {
 		super();
 		this.id = id;
 		this.name = name;
+		this.image = image;
 	}
+	
+	
 
 	public Category() {
 		super();

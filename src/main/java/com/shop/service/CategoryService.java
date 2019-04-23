@@ -12,7 +12,11 @@ public interface CategoryService {
 	Category addNewCategory(Category objCat);
 	
 	//Get category by ID
-	Category getCateogry(int id);
+	Category getCateogryById(int id);
+	
+	//Get category by Name
+	Category getCategoryByName(String name);
+	
 	
 	//Edit category
 	Category editCategory(Category objCat);
