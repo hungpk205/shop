@@ -32,6 +32,7 @@ import com.shop.service.FileStorageService;
 import com.shop.service.ProductService;
 import com.shop.utils.MessengerUtils;
 
+@CrossOrigin(origins = "http://localhost:4200")
 @RestController
 @RequestMapping("api/category")
 public class CategoryController {
