@@ -6,12 +6,14 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 
 import com.shop.property.FileStorageProperties;
 
-@SpringBootApplication
+
 
 @EnableConfigurationProperties({
     FileStorageProperties.class
 })
 
+
+@SpringBootApplication
 public class ShopApiApplication {
 
 	public static void main(String[] args) {
