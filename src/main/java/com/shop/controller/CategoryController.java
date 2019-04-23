@@ -47,7 +47,6 @@ public class CategoryController {
 	private FileStorageService fileStorageService;
 	
 	//Get all categories
-	@CrossOrigin(origins = "http://localhost:4200")
 	@GetMapping("all")
 	public ResponseEntity<List<Category>> getAll(){
 		List<Category> listCat = categoryService.getAllCategory();
@@ -59,7 +58,6 @@ public class CategoryController {
 	}
 	
 	//Add new category
-	@CrossOrigin(origins = "http://localhost:4200")
 	@PostMapping("add")
 	public ResponseEntity<CategoryDTO> add(@RequestParam("name") String name,
 											@RequestParam("image") MultipartFile image){
@@ -86,7 +84,6 @@ public class CategoryController {
 		}
 	}
 	
-	@CrossOrigin(origins = "http://localhost:4200")
 	@GetMapping("/downloadFile/{fileName:.+}")
 	public ResponseEntity<Resource> downloadFile (@PathVariable String fileName, HttpServletRequest request){
 		Resource resource = fileStorageService.loadFileAsResource(fileName);
@@ -107,7 +104,6 @@ public class CategoryController {
 	}
 	
 	//Edit category
-	@CrossOrigin(origins = "http://localhost:4200")
 	@PutMapping("{idCat}")
 	public ResponseEntity<CategoryDTO> edit(@PathVariable("idCat") int idCat, @RequestBody Category objCat){
 		Category cat = categoryService.getCateogryById(idCat);
@@ -126,7 +122,6 @@ public class CategoryController {
 	}
 	
 	//Delete category
-	@CrossOrigin(origins = "http://localhost:4200")
 	@DeleteMapping("{idCat}")
 	public ResponseEntity<MessengerUtils> delete(@PathVariable("idCat") int idCat){
 		if (categoryService.getCateogryById(idCat) == null) {
@@ -144,7 +139,6 @@ public class CategoryController {
 		}
 	}
 	
-	@CrossOrigin(origins = "http://localhost:4200")
 	@GetMapping("product/{idCat}")
 	public ResponseEntity<List<Product>> getListProductinCategory(@PathVariable("idCat") int idCat){
 		List<Product> listProduct = prodcutService.getListProductByIdCategory(idCat);
