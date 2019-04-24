@@ -40,6 +40,11 @@ public class Permission {
 		this.id = id;
 		this.name = name;
 	}
+	
+	public Permission(String name) {
+		super();
+		this.name = name;
+	}
 
 	public Permission() {
 		super();

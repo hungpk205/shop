@@ -37,4 +37,9 @@ public class AccountServiceImpl implements AccountService {
 		return listAccount;
 	}
 
+	@Override
+	public void deleteAccount(Account objAccount) {
+		accountRepo.delete(objAccount);
+	}
+
 }

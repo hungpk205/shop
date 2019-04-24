@@ -133,7 +133,17 @@ public class Account implements Serializable {
 		this.status = status;
 	}
 	
-	
+
+	public Account(Integer id, String username, Profile profile, int status, Set<Role> role,
+			Set<Permission> permission) {
+		super();
+		this.id = id;
+		this.username = username;
+		this.profile = profile;
+		this.status = status;
+		this.role = role;
+		this.permission = permission;
+	}
 
 	public Account(Integer id, String username, String password, Profile profile, int status) {
 		super();

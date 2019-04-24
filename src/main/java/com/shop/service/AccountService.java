@@ -16,4 +16,7 @@ public interface AccountService {
 	
 	//Get all account
 	List<Account> listAccount();
+	
+	//Delete account by id
+	void deleteAccount(Account objAccount);
 }

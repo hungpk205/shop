@@ -18,4 +18,9 @@ public class ProfileServiceImpl implements ProfileService {
 		return profileRepo.save(objProfile);
 	}
 
+	@Override
+	public void deleteProfile(Profile objProfile) {
+		profileRepo.delete(objProfile);
+	}
+
 }
