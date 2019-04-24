@@ -13,9 +13,9 @@ import com.shop.entities.Account;
 public interface AccountRepository extends JpaRepository<Account, Integer>{
 	
 	//Get all account have role is SHOP OWNER
-	@Query(value = "SELECT * FROM accounts AS ac INNER JOIN account_role AS ar ON ac.id = ar.id_account" + 
+	/*@Query(value = "SELECT * FROM accounts AS ac INNER JOIN account_role AS ar ON ac.id = ar.id_account" + 
 				"	INNER JOIN roles AS r ON ar.id_role = r.id WHERE r.name LIKE 'SHOP OWNER'")
-	List<Account> getAccountShop();
+	List<Account> getAccountShop();*/
 	
 	
 	//Get account by username and password
