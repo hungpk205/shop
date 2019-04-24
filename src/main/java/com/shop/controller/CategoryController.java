@@ -59,7 +59,7 @@ public class CategoryController {
 	}
 	
 	//Add new category
-	@PostMapping("add/cat")
+	@PostMapping("add")
 	public ResponseEntity<CategoryDTO> add(@RequestParam("name") String name,
 											@RequestParam("image") MultipartFile image){
 		//Check name
