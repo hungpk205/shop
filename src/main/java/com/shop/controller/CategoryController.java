@@ -59,7 +59,7 @@ public class CategoryController {
 	}
 	
 	//Add new category
-	/*@PostMapping("add")
+	@PostMapping("add/cat")
 	public ResponseEntity<CategoryDTO> add(@RequestParam("name") String name,
 											@RequestParam("image") MultipartFile image){
 		//Check name
@@ -83,7 +83,7 @@ public class CategoryController {
 			return new ResponseEntity<CategoryDTO>(catDTO,HttpStatus.OK);
 			
 		}
-	}*/
+	}
 	
 	@GetMapping("/downloadFile/{fileName:.+}")
 	public ResponseEntity<Resource> downloadFile (@PathVariable String fileName, HttpServletRequest request){
