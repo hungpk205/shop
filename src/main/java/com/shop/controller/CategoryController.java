@@ -32,7 +32,6 @@ import com.shop.service.FileStorageService;
 import com.shop.service.ProductService;
 import com.shop.utils.MessengerUtils;
 
-@CrossOrigin(origins = "http://localhost:4200")
 @RestController
 @RequestMapping("api/category")
 public class CategoryController {
@@ -60,48 +59,20 @@ public class CategoryController {
 	
 	//Add new category
 	@PostMapping("add")
-	public ResponseEntity<CategoryDTO> add(@RequestParam("name") String name,
-											@RequestParam("image") MultipartFile image){
+	public ResponseEntity<CategoryDTO> add(@RequestBody Category objCat){
 		//Check name
-		if ("".equals(name) || (categoryService.getCategoryByName(name) != null )) {
+		if ("".equals(objCat.getName()) || (categoryService.getCategoryByName(objCat.getName()) != null )) {
 			CategoryDTO catDTO = new CategoryDTO();
 			catDTO.setSuccess("false");
 			return new ResponseEntity<CategoryDTO>(catDTO, HttpStatus.NOT_ACCEPTABLE);
 		} else {
 			//Add this category
-			Category objCat = new Category();
-			objCat.setName(name);
-			
-			//Upload image
-			String fileName = fileStorageService.storeFile(image);
-			String fileDownloadURI = ServletUriComponentsBuilder.fromCurrentContextPath().path("api/category/downloadFile/").path(fileName).toUriString();
-			
-			objCat.setImage(fileDownloadURI);
 			
 			categoryService.addNewCategory(objCat);
 			CategoryDTO catDTO = new CategoryDTO("true", objCat.getName(), objCat.getImage());
 			return new ResponseEntity<CategoryDTO>(catDTO,HttpStatus.OK);
 			
 		}
-	}
-	
-	@GetMapping("/downloadFile/{fileName:.+}")
-	public ResponseEntity<Resource> downloadFile (@PathVariable String fileName, HttpServletRequest request){
-		Resource resource = fileStorageService.loadFileAsResource(fileName);
-		
-		String contentType = null;
-		try {
-			contentType = request.getServletContext().getMimeType(resource.getFile().getAbsolutePath());
-		} catch (IOException e) {
-			logger.info("Could not determine file type.");
-		}
-		
-		if (contentType == null) {
-			contentType = "application/octet-stream";
-		}
-		
-		//return ResponseEntity.ok().contentType(MediaType.parseMediaType(contentType)).header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"").body(resource);
-		return new ResponseEntity<Resource>(resource, HttpStatus.OK);
 	}
 	
 	//Edit category
