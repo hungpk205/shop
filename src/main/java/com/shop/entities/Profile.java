@@ -9,8 +9,11 @@ import javax.persistence.Id;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 @Entity
 @Table(name = "profiles")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Profile {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,7 +34,6 @@ public class Profile {
 	
 	@Column(name = "address")
 	private String address;
-	
 	
 	@OneToOne(cascade = CascadeType.ALL, mappedBy = "profile")
 	private Account account;

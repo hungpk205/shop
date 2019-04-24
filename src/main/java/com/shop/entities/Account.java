@@ -39,7 +39,6 @@ public class Account implements Serializable {
 	@Column
 	private String password;
 	
-	
 	@OneToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "id_profile")
 	private Profile profile;

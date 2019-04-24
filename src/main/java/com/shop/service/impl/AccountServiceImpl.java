@@ -42,4 +42,9 @@ public class AccountServiceImpl implements AccountService {
 		accountRepo.delete(objAccount);
 	}
 
+	@Override
+	public Account editAccount(Account objAccount) {
+		return accountRepo.save(objAccount);
+	}
+
 }

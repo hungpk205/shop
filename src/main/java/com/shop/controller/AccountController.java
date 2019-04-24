@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -19,6 +20,7 @@ import com.shop.dto.AccountDTO;
 import com.shop.entities.Account;
 import com.shop.entities.Permission;
 import com.shop.entities.Role;
+import com.shop.response.MessageResponse;
 import com.shop.service.AccountService;
 import com.shop.service.PermissionService;
 import com.shop.service.ProfileService;
@@ -82,6 +84,47 @@ public class AccountController {
 			return new ResponseEntity<List<AccountDTO>>(listAccountDTO, HttpStatus.OK);
 		}
 	}
+	
+	//Get information account
+	@GetMapping("{id}")
+	public ResponseEntity<AccountDTO> getAccount(@PathVariable("id") int id){
+		Account account = accountService.getAccountById(id);
+		if (account != null) {
+			AccountDTO accountDTO = new AccountDTO(id, account.getUsername(), account.getStatus(), account.getProfile());
+			for (Role role : account.getRole()) {
+				accountDTO.setRole(role.getName());
+			}
+			accountDTO.setPermission(account.getPermission());
+			
+			return new ResponseEntity<AccountDTO>(accountDTO, HttpStatus.OK);
+		} else {
+			return new ResponseEntity<AccountDTO>(HttpStatus.NOT_ACCEPTABLE);
+		}
+		
+	}
+	
+	//Edit Account
+	@PutMapping("{id}")
+	public ResponseEntity<MessageResponse> editAccount(@RequestBody Account objAccount){
+		//Get account by id
+		Account account = accountService.getAccountById(objAccount.getId());
+		
+		if (account != null) {
+			account.setProfile(objAccount.getProfile());
+			accountService.editAccount(account);
+			
+			MessageResponse msg = new MessageResponse("success");
+			return new ResponseEntity<MessageResponse>(msg, HttpStatus.OK);
+			
+		} else {
+			MessageResponse msg = new MessageResponse("error");
+			return new ResponseEntity<MessageResponse>(msg,HttpStatus.NOT_ACCEPTABLE);
+		}
+		
+		
+	}
+	
+	
 	
 	//Delete account
 	@DeleteMapping("{id}")
