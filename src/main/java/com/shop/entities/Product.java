@@ -44,6 +44,7 @@ public class Product {
 	@ManyToOne
 	@JoinColumn(name = "created_by")
 	private Account account;
+	
 	@Column
 	private Date created_at;
 	

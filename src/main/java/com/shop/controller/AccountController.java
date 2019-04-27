@@ -1,10 +1,14 @@
 package com.shop.controller;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -14,14 +18,19 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.shop.dto.AccountDTO;
 import com.shop.entities.Account;
 import com.shop.entities.Permission;
+import com.shop.entities.Profile;
 import com.shop.entities.Role;
 import com.shop.response.MessageResponse;
 import com.shop.service.AccountService;
+import com.shop.service.FileStorageService;
 import com.shop.service.PermissionService;
 import com.shop.service.ProfileService;
 import com.shop.service.RoleService;
@@ -38,6 +47,8 @@ public class AccountController {
 	@Autowired
 	private PermissionService permissionService;
 	
+	@Autowired
+	private FileStorageService fileStorageService;
 	@Autowired
 	private ProfileService profileService;
 	
@@ -105,23 +116,64 @@ public class AccountController {
 	
 	//Edit Account
 	@PutMapping("{id}")
-	public ResponseEntity<MessageResponse> editAccount(@RequestBody Account objAccount){
+	public ResponseEntity<MessageResponse> editAccount(@PathVariable("id") int id,
+			@RequestParam("fullname") String fullname,
+			@RequestParam(value = "avatar", required = false) MultipartFile avatar,
+			@RequestParam("email") String email,
+			@RequestParam("phone") String phone,
+			@RequestParam("address") String address){
 		//Get account by id
-		Account account = accountService.getAccountById(objAccount.getId());
+		Account account = accountService.getAccountById(id);
 		
-		if (account != null) {
-			account.setProfile(objAccount.getProfile());
+		String avatarOld = account.getProfile().getAvatar();
+		
+		Profile objProfile = new Profile();
+		objProfile.setId(account.getProfile().getId());
+		objProfile.setFullname(fullname);
+		objProfile.setEmail(email);;
+		objProfile.setPhone(phone);;
+		objProfile.setAddress(address);
+		//Check chosen file
+		if( avatar != null) {
+			//Upload file
+			String fileName = fileStorageService.storeFile(avatar);
+			String fileDownloadURI = ServletUriComponentsBuilder.fromCurrentContextPath().path("api/account/downloadFile/").path(fileName).toUriString();
+			objProfile.setAvatar(fileDownloadURI);
+			
+			account.setProfile(objProfile);
 			accountService.editAccount(account);
 			
 			MessageResponse msg = new MessageResponse("success");
 			return new ResponseEntity<MessageResponse>(msg, HttpStatus.OK);
-			
 		} else {
-			MessageResponse msg = new MessageResponse("error");
-			return new ResponseEntity<MessageResponse>(msg,HttpStatus.NOT_ACCEPTABLE);
+			objProfile.setAvatar(avatarOld);
+			account.setProfile(objProfile);
+			accountService.editAccount(account);
+			
+			MessageResponse msg = new MessageResponse("success");
+			return new ResponseEntity<MessageResponse>(msg, HttpStatus.OK);
 		}
 		
 		
+	}
+	//Link image
+	@GetMapping("/downloadFile/{fileName:.+}")
+	public ResponseEntity<Resource> downloadFile (@PathVariable String fileName, HttpServletRequest request){
+		Resource resource = fileStorageService.loadFileAsResource(fileName);
+		
+		String contentType = null;
+		try {
+			contentType = request.getServletContext().getMimeType(resource.getFile().getAbsolutePath());
+		} catch (IOException e) {
+			//logger.info("Could not determine file type.");
+		}
+		
+		if (contentType == null) {
+			contentType = "application/octet-stream";
+		}
+		
+		//return ResponseEntity.ok().contentType(MediaType.parseMediaType(contentType)).header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"").body(resource);
+		return new ResponseEntity<Resource>(resource, HttpStatus.OK);
 	}
 	
 	
