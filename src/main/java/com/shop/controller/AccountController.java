@@ -85,12 +85,10 @@ public class AccountController {
 			Role role = roleService.getRoleByName("CUSTOMER");
 			account.getRole().add(role);
 			account.setProfile(new Profile());
+			account.setPermission(null);
 			Account accountSave =  accountService.addAccount(account);
 			
-			/*AccountDTO accountDTO = new AccountDTO(accountSave.getId(), accountSave.getUsername(), accountSave.getStatus(), accountSave.getProfile());
-			for (Role item : accountSave.getRole()) {
-				accountDTO.setRole(item.getName());
-			}*/
+			
 			RegisterResponse response = new RegisterResponse("success", accountSave.getId());
 			return new ResponseEntity<RegisterResponse>(response, HttpStatus.OK);
 			
