@@ -29,6 +29,7 @@ import com.shop.entities.Permission;
 import com.shop.entities.Profile;
 import com.shop.entities.Role;
 import com.shop.response.MessageResponse;
+import com.shop.response.RegisterResponse;
 import com.shop.service.AccountService;
 import com.shop.service.FileStorageService;
 import com.shop.service.PermissionService;
@@ -75,7 +76,7 @@ public class AccountController {
 	}
 	
 	@PostMapping("register")
-	public ResponseEntity<AccountDTO> register(@RequestParam("username") String username, @RequestParam("password") String password){
+	public ResponseEntity<RegisterResponse> register(@RequestParam("username") String username, @RequestParam("password") String password){
 		if (accountService.getAccountByUsername(username) == null) {
 			Account account = new Account(null, username, password, 1);
 			
@@ -86,15 +87,16 @@ public class AccountController {
 			account.setProfile(new Profile());
 			Account accountSave =  accountService.addAccount(account);
 			
-			AccountDTO accountDTO = new AccountDTO(accountSave.getId(), accountSave.getUsername(), accountSave.getStatus(), accountSave.getProfile());
+			/*AccountDTO accountDTO = new AccountDTO(accountSave.getId(), accountSave.getUsername(), accountSave.getStatus(), accountSave.getProfile());
 			for (Role item : accountSave.getRole()) {
 				accountDTO.setRole(item.getName());
-			}
-			
-			return new ResponseEntity<AccountDTO>(accountDTO, HttpStatus.OK);
+			}*/
+			RegisterResponse response = new RegisterResponse("success", accountSave.getId());
+			return new ResponseEntity<RegisterResponse>(response, HttpStatus.OK);
 			
 		} else {
-			return new ResponseEntity<AccountDTO>(HttpStatus.NOT_ACCEPTABLE);
+			RegisterResponse response = new RegisterResponse("fail");
+			return new ResponseEntity<RegisterResponse>(response, HttpStatus.NOT_ACCEPTABLE);
 		}
 	}
 	
@@ -111,9 +113,11 @@ public class AccountController {
 				objAccountDTO.setRole(role.getName());
 			}
 			
+			List<String> listPermission = new ArrayList<>();
 			for(Permission item :account.getPermission()) {
-				objAccountDTO.getPermission().add(item.getName());
+				listPermission.add(item.getName());
 			}
+			objAccountDTO.setPermission(listPermission);
 			
 			listAccountDTO.add(objAccountDTO);
 		}
