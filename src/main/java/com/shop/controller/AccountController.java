@@ -53,9 +53,9 @@ public class AccountController {
 	private ProfileService profileService;
 	
 	
-	//Register
-	@PostMapping("register")
-	public ResponseEntity<Account> register(@RequestBody Account objAccount
+	//Add
+	@PostMapping("add")
+	public ResponseEntity<Account> add(@RequestBody Account objAccount
 			){
 		Account newAccount = new Account(objAccount);
 		
@@ -74,6 +74,31 @@ public class AccountController {
 		return new ResponseEntity<Account>(account, HttpStatus.OK);
 	}
 	
+	@PostMapping("register")
+	public ResponseEntity<AccountDTO> register(@RequestParam("username") String username, @RequestParam("password") String password){
+		if (accountService.getAccountByUsername(username) == null) {
+			Account account = new Account(null, username, password, 1);
+			
+			//Role role = roleService.getRoleByName("CUSTOMER");
+			
+			Role role = roleService.getRoleByName("CUSTOMER");
+			account.getRole().add(role);
+			account.setProfile(new Profile());
+			Account accountSave =  accountService.addAccount(account);
+			
+			AccountDTO accountDTO = new AccountDTO(accountSave.getId(), accountSave.getUsername(), accountSave.getStatus(), accountSave.getProfile());
+			for (Role item : accountSave.getRole()) {
+				accountDTO.setRole(item.getName());
+			}
+			
+			return new ResponseEntity<AccountDTO>(accountDTO, HttpStatus.OK);
+			
+		} else {
+			return new ResponseEntity<AccountDTO>(HttpStatus.NOT_ACCEPTABLE);
+		}
+	}
+	
+	
 	//Get List Account
 	@GetMapping("all")
 	public ResponseEntity<List<AccountDTO>> getAll(){
@@ -85,7 +110,11 @@ public class AccountController {
 			for(Role role :account.getRole()) {
 				objAccountDTO.setRole(role.getName());
 			}
-			objAccountDTO.setPermission(account.getPermission());
+			
+			for(Permission item :account.getPermission()) {
+				objAccountDTO.getPermission().add(item.getName());
+			}
+			
 			listAccountDTO.add(objAccountDTO);
 		}
 		
@@ -105,7 +134,9 @@ public class AccountController {
 			for (Role role : account.getRole()) {
 				accountDTO.setRole(role.getName());
 			}
-			accountDTO.setPermission(account.getPermission());
+			for (Permission item : account.getPermission()) {
+				accountDTO.getPermission().add(item.getName());
+			}
 			
 			return new ResponseEntity<AccountDTO>(accountDTO, HttpStatus.OK);
 		} else {

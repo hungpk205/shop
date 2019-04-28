@@ -8,6 +8,9 @@ public interface AccountService {
 	//Add new account
 	Account addAccount(Account objAccout);
 	
+	//Get account by name
+	Account getAccountByUsername(String username);
+	
 	//Get account by username and password
 	Account GetAccountByUsernameAndPassword(String username, String password);
 	

@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.shop.dto.AccountDTO;
 import com.shop.entities.Account;
+import com.shop.entities.Permission;
 import com.shop.entities.Role;
 import com.shop.service.AccountService;
 
@@ -32,7 +33,11 @@ public class LoginController {
 			for (Role item : accountLogin.getRole()) {
 				accountDTO.setRole(item.getName());
 			}
-			accountDTO.setPermission(accountLogin.getPermission());
+			for (Permission item : accountLogin.getPermission()) {
+				accountDTO.getPermission().add(item.getName());
+			}
+			
+			
 			
 			return new ResponseEntity<AccountDTO>(accountDTO, HttpStatus.OK);
 		} else {

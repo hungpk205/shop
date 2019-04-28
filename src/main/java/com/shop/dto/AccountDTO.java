@@ -1,5 +1,6 @@
 package com.shop.dto;
 
+import java.util.List;
 import java.util.Set;
 
 import com.shop.entities.Permission;
@@ -11,7 +12,7 @@ public class AccountDTO {
 	private int status;
 	private Profile profile;
 	private String role;
-	private Set<Permission> permission;
+	private List<String> permission;
 	public int getId() {
 		return id;
 	}
@@ -43,10 +44,10 @@ public class AccountDTO {
 		this.role = role;
 	}
 	
-	public Set<Permission> getPermission() {
+	public List<String> getPermission() {
 		return permission;
 	}
-	public void setPermission(Set<Permission> permission) {
+	public void setPermission(List<String> permission) {
 		this.permission = permission;
 	}
 	public AccountDTO(int id, String username, int status, Profile profile) {

@@ -53,7 +53,6 @@ public class ProductController {
 	private FileStorageService fileStorageService;
 	
 	
-	@CrossOrigin(origins = "http://localhost:4200")
 	@GetMapping("all")
 	public ResponseEntity<List<Product>> getAll(){
 		List<Product> listProduct = productService.getAll();
@@ -64,7 +63,6 @@ public class ProductController {
 		}
 	}
 	
-	@CrossOrigin(origins = "http://localhost:4200")
 	@GetMapping(value = {"top/{page}", "top"})
 	public ResponseEntity<List<Product>> getTop12Pagination(@PathVariable("page") Optional<Integer> page){
 		int currentPage = 0;
