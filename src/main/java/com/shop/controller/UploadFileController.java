@@ -1,6 +1,8 @@
 package com.shop.controller;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -31,7 +33,7 @@ public class UploadFileController {
 	private FileStorageService fileStorageService;
 	
 	@PostMapping("upload")
-	public ResponseEntity<UploadFileResponse> add(@RequestParam("image") MultipartFile image){
+	public ResponseEntity<UploadFileResponse> upload(@RequestParam("image") MultipartFile image){
 		//Check name
 		if (image.isEmpty()) {
 			return new ResponseEntity<UploadFileResponse>(HttpStatus.NOT_ACCEPTABLE);
@@ -41,9 +43,28 @@ public class UploadFileController {
 			String fileDownloadURI = ServletUriComponentsBuilder.fromCurrentContextPath().path("api/downloadFile/").path(fileName).toUriString();
 			UploadFileResponse response = new UploadFileResponse(fileName, fileDownloadURI, image.getContentType(), image.getSize());
 			return new ResponseEntity<UploadFileResponse>(response,HttpStatus.OK);
-			
 		}
 	}
+	
+	@PostMapping("multipartFile")
+	public ResponseEntity<List<UploadFileResponse>> uploadMultipart (@RequestParam("image") MultipartFile[] image){
+		List<UploadFileResponse> list = new ArrayList<>();
+		//Check name
+		if (image == null) {
+			return new ResponseEntity<List<UploadFileResponse>>(HttpStatus.NOT_ACCEPTABLE);
+		} else {
+			//Upload image
+			for (MultipartFile multipartFile : image) {
+				String fileName = fileStorageService.storeFile(multipartFile);
+				String fileDownloadURI = ServletUriComponentsBuilder.fromCurrentContextPath().path("api/downloadFile/").path(fileName).toUriString();
+				UploadFileResponse response = new UploadFileResponse(fileName, fileDownloadURI, multipartFile.getContentType(), multipartFile.getSize());
+				list.add(response);
+			}
+			
+			return new ResponseEntity<List<UploadFileResponse>>(list,HttpStatus.OK);
+		}
+	}
+	
 	
 	@GetMapping("/downloadFile/{fileName:.+}")
 	public ResponseEntity<Resource> downloadFile (@PathVariable String fileName, HttpServletRequest request){

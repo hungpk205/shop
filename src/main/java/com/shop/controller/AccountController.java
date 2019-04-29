@@ -20,8 +20,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.shop.dto.AccountDTO;
 import com.shop.entities.Account;
@@ -183,73 +181,31 @@ public class AccountController {
 		
 	}
 	
-	//Edit Account
+	//Edit Account Profile
 	@PutMapping("{id}")
 	public ResponseEntity<MessageResponse> editAccount(@PathVariable("id") int id,
-			@RequestParam("fullname") String fullname,
-			@RequestParam(value = "avatar", required = false) MultipartFile avatar,
-			@RequestParam("email") String email,
-			@RequestParam("phone") String phone,
-			@RequestParam("address") String address){
+			@RequestBody Profile objProfile
+			){
 		//Get account by id
 		Account account = accountService.getAccountById(id);
-		
-		String avatarOld = account.getProfile().getAvatar();
-		
-		Profile objProfile = new Profile();
-		objProfile.setId(account.getProfile().getId());
-		objProfile.setFullname(fullname);
-		objProfile.setEmail(email);;
-		objProfile.setPhone(phone);;
-		objProfile.setAddress(address);
-		//Check chosen file
-		if( avatar != null) {
-			//Upload file
-			String fileName = fileStorageService.storeFile(avatar);
-			String fileDownloadURI = ServletUriComponentsBuilder.fromCurrentContextPath().path("api/account/downloadFile/").path(fileName).toUriString();
-			objProfile.setAvatar(fileDownloadURI);
-			
-			account.setProfile(objProfile);
-			accountService.editAccount(account);
-			
-			MessageResponse msg = new MessageResponse("success");
-			return new ResponseEntity<MessageResponse>(msg, HttpStatus.OK);
-		} else {
-			objProfile.setAvatar(avatarOld);
-			account.setProfile(objProfile);
-			accountService.editAccount(account);
-			
-			MessageResponse msg = new MessageResponse("success");
-			return new ResponseEntity<MessageResponse>(msg, HttpStatus.OK);
+		if (account == null) {
+			MessageResponse response = new MessageResponse("fail: not found this account");
+			return new ResponseEntity<MessageResponse>(response, HttpStatus.NOT_FOUND);
 		}
+		Profile profile = new Profile(account.getProfile().getId(), objProfile.getFullname(), objProfile.getEmail(), objProfile.getPhone(), objProfile.getAddress(), objProfile.getAvatar());
 		
+		
+		account.setProfile(profile);
+		accountService.editAccount(account);
+		
+		MessageResponse msg = new MessageResponse("success");
+		return new ResponseEntity<MessageResponse>(msg, HttpStatus.OK);
 		
 	}
-	//Link image
-	@GetMapping("/downloadFile/{fileName:.+}")
-	public ResponseEntity<Resource> downloadFile (@PathVariable String fileName, HttpServletRequest request){
-		Resource resource = fileStorageService.loadFileAsResource(fileName);
-		
-		String contentType = null;
-		try {
-			contentType = request.getServletContext().getMimeType(resource.getFile().getAbsolutePath());
-		} catch (IOException e) {
-			//logger.info("Could not determine file type.");
-		}
-		
-		if (contentType == null) {
-			contentType = "application/octet-stream";
-		}
-		
-		//return ResponseEntity.ok().contentType(MediaType.parseMediaType(contentType)).header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"").body(resource);
-		return new ResponseEntity<Resource>(resource, HttpStatus.OK);
-	}
-	
-	
 	
 	//Delete account
 	@DeleteMapping("{id}")
-	public ResponseEntity<MessengerUtils> delete(@PathVariable("id") int id, @RequestBody Account accountLogin){
+	public ResponseEntity<MessengerUtils> delete(@PathVariable("id") int id){
 		//Get account by id
 		Account objAccount = accountService.getAccountById(id);
 		
@@ -259,10 +215,9 @@ public class AccountController {
 			return new ResponseEntity<MessengerUtils>(msg, HttpStatus.NOT_ACCEPTABLE);
 		}
 		
-		//Check role of accountLogin
-		if (roleService.getRoleById(accountLogin.getId()).getName().equals("ADMIN")) {
+		
 			//Delete account profile
-			profileService.deleteProfile(objAccount.getProfile());
+			//profileService.deleteProfile(objAccount.getProfile());
 			
 			//Delete 
 			
@@ -272,11 +227,6 @@ public class AccountController {
 			
 			MessengerUtils msg = new MessengerUtils("true", "Deleted account id " + id);
 			return new ResponseEntity<MessengerUtils>(msg, HttpStatus.OK);
-		} else {
-			MessengerUtils msg = new MessengerUtils("fasle", "Do not have permissions");
-			return new ResponseEntity<MessengerUtils>(msg, HttpStatus.OK);
-		}
-		
 		
 	}
 

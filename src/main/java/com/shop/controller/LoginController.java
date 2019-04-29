@@ -29,15 +29,13 @@ public class LoginController {
 		
 		
 		if (accountLogin != null) {
-			AccountDTO accountDTO = new AccountDTO(accountLogin.getId(), accountLogin.getUsername(), accountLogin.getStatus(), accountLogin.getProfile());
+			AccountDTO accountDTO = new AccountDTO(accountLogin.getUsername(), accountLogin.getStatus(), accountLogin.getProfile());
 			for (Role item : accountLogin.getRole()) {
 				accountDTO.setRole(item.getName());
 			}
 			for (Permission item : accountLogin.getPermission()) {
 				accountDTO.getPermission().add(item.getName());
 			}
-			
-			
 			
 			return new ResponseEntity<AccountDTO>(accountDTO, HttpStatus.OK);
 		} else {
