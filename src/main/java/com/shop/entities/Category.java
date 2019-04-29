@@ -11,7 +11,11 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+
 @Entity
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @Table(name = "categories")
 public class Category {
 	
@@ -63,8 +67,6 @@ public class Category {
 		this.image = image;
 	}
 	
-	
-
 	public Category() {
 		super();
 	}

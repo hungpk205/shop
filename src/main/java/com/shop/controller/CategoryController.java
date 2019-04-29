@@ -43,6 +43,18 @@ public class CategoryController {
 		}
 	}
 	
+	//Get category by id
+	@GetMapping("{id}")
+	public ResponseEntity<Category> getCategory(@PathVariable("id") int id){
+		 Category objCat = categoryService.getCateogryById(id);
+		 if (objCat == null) {
+			 return new ResponseEntity<Category>(HttpStatus.NO_CONTENT);
+		 } else {
+			 return new ResponseEntity<Category>(objCat, HttpStatus.OK);
+		 }
+		 
+	}
+	
 	//Add new category
 	@PostMapping("add")
 	public ResponseEntity<CategoryDTO> add(@RequestBody Category objCat){
@@ -72,6 +84,8 @@ public class CategoryController {
 				return new ResponseEntity<CategoryDTO>(HttpStatus.NOT_ACCEPTABLE);
 			} else {
 				cat.setName(objCat.getName());
+				cat.setImage(objCat.getImage());
+				
 				Category catEdited =  categoryService.editCategory(cat);
 				CategoryDTO catDTO = new CategoryDTO("true", catEdited.getName(), objCat.getImage());
 				return new ResponseEntity<CategoryDTO>(catDTO,HttpStatus.OK);

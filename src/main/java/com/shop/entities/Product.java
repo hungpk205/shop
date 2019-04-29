@@ -1,5 +1,6 @@
 package com.shop.entities;
 
+import java.sql.Timestamp;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -29,24 +30,20 @@ public class Product {
 	@Column
 	private String picture;
 	@Column
-	private String img1;
-	@Column
-	private String img2;
-	@Column
-	private String img3;
-	@Column
 	private int quantity;
 	@Column
 	private float price;
 	@Column
 	private int count_buy;
+	@Column
+	private int active;
 	
 	@ManyToOne
 	@JoinColumn(name = "created_by")
 	private Account account;
 	
 	@Column
-	private Date created_at;
+	private Timestamp created_at;
 	
 	@JsonIgnoreProperties("category")
 	@ManyToOne
@@ -93,30 +90,6 @@ public class Product {
 		this.picture = picture;
 	}
 
-	public String getImg1() {
-		return img1;
-	}
-
-	public void setImg1(String img1) {
-		this.img1 = img1;
-	}
-
-	public String getImg2() {
-		return img2;
-	}
-
-	public void setImg2(String img2) {
-		this.img2 = img2;
-	}
-
-	public String getImg3() {
-		return img3;
-	}
-
-	public void setImg3(String img3) {
-		this.img3 = img3;
-	}
-
 	public int getQuantity() {
 		return quantity;
 	}
@@ -141,11 +114,11 @@ public class Product {
 		this.count_buy = count_buy;
 	}
 
-	public Date getCreated_at() {
+	public Timestamp getCreated_at() {
 		return created_at;
 	}
 
-	public void setCreated_at(Date created_at) {
+	public void setCreated_at(Timestamp created_at) {
 		this.created_at = created_at;
 	}
 
@@ -164,9 +137,16 @@ public class Product {
 	public void setCategory(Category category) {
 		this.category = category;
 	}
+	
+	public int getActive() {
+		return active;
+	}
 
-	public Product(Integer id, String name, String description, String detail, String picture, String img1, String img2,
-			String img3, int quantity, float price, int count_buy, Account account, Date created_at,
+	public void setActive(int active) {
+		this.active = active;
+	}
+
+	public Product(Integer id, String name, String description, String detail, String picture, int quantity, float price, int count_buy, Account account, Timestamp created_at,
 			Category category) {
 		super();
 		this.id = id;
@@ -174,9 +154,6 @@ public class Product {
 		this.description = description;
 		this.detail = detail;
 		this.picture = picture;
-		this.img1 = img1;
-		this.img2 = img2;
-		this.img3 = img3;
 		this.quantity = quantity;
 		this.price = price;
 		this.count_buy = count_buy;

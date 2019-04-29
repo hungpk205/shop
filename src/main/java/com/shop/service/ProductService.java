@@ -13,6 +13,9 @@ public interface ProductService {
 	//Get count all products
 	int getCountProducts();
 	
+	//Get product by id
+	Product getOneProduct(int id);
+	
 	List<Product> getAll();
 	
 	//Delete product by id
@@ -25,4 +28,7 @@ public interface ProductService {
 	List<Product> getListProductByIdCategory(int idCat);
 	
 	Product addOneProduct(Product objProduct);
+	
+	//Change active product
+	Product changeActive(Product objProduct);
 }

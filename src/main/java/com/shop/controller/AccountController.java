@@ -136,9 +136,12 @@ public class AccountController {
 			for (Role role : account.getRole()) {
 				accountDTO.setRole(role.getName());
 			}
+			
+			List<String> listPermission = new ArrayList<>();
 			for (Permission item : account.getPermission()) {
-				accountDTO.getPermission().add(item.getName());
+				listPermission.add(item.getName());
 			}
+			accountDTO.setPermission(listPermission);
 			
 			return new ResponseEntity<AccountDTO>(accountDTO, HttpStatus.OK);
 		} else {

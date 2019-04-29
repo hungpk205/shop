@@ -54,4 +54,14 @@ public class ProductServiceImpl implements ProductService {
 		return productRepo.save(objProduct);
 	}
 
+	@Override
+	public Product getOneProduct(int id) {
+		return productRepo.getOne(id);
+	}
+
+	@Override
+	public Product changeActive(Product objProduct) {
+		return productRepo.save(objProduct);
+	}
+
 }
