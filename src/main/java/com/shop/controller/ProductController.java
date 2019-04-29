@@ -63,36 +63,54 @@ public class ProductController {
 	
 	
 	@GetMapping("all")
-	public ResponseEntity<List<Product>> getAll(){
+	public ResponseEntity<List<ProductDTO>> getAll(){
 		List<Product> listProduct = productService.getAll();
+		
+		List<ProductDTO> listProductDTO = new ArrayList<>();
+		
+		for (Product product : listProduct) {
+			List<String> listImage = new ArrayList<>();
+			String[] arrImage = product.getPicture().split(",");
+			for (int i = 0; i < arrImage.length; i++) {
+				listImage.add(arrImage[i]);
+			}
+			
+			ProductDTO productDTO = new ProductDTO("success", product.getName(), product.getCategory().getName(), product.getDescription(), product.getDetail(), listImage, product.getQuantity(), product.getPrice(), product.getCount_buy(), product.getAccount().getUsername(), product.getCreated_at());
+			listProductDTO.add(productDTO);
+			
+		}
+		
 		if (listProduct.isEmpty()) {
-			return new ResponseEntity<List<Product>>(HttpStatus.NO_CONTENT);
+			return new ResponseEntity<List<ProductDTO>>(HttpStatus.NO_CONTENT);
 		} else {
-			return new ResponseEntity<List<Product>>(listProduct, HttpStatus.OK);
+			return new ResponseEntity<List<ProductDTO>>(listProductDTO, HttpStatus.OK);
 		}
 	}
 	
-	//Get top 10 product
-	@GetMapping(value = {"top/{page}", "top"})
-	public ResponseEntity<List<Product>> getTop12Pagination(@PathVariable("page") Optional<Integer> page){
-		int currentPage = 0;
-		if (page.isPresent()) {
-			currentPage = page.get();
+	//
+	@GetMapping("top")
+	public ResponseEntity<List<ProductDTO>> getTop10Product(){
+		List<Product> listProduct = productService.getTop10Product();
+		
+		List<ProductDTO> listProductDTO = new ArrayList<>();
+		
+		for (Product product : listProduct) {
+			List<String> listImage = new ArrayList<>();
+			String[] arrImage = product.getPicture().split(",");
+			for (int i = 0; i < arrImage.length; i++) {
+				listImage.add(arrImage[i]);
+			}
+			
+			ProductDTO productDTO = new ProductDTO("success", product.getName(), product.getCategory().getName(), product.getDescription(), product.getDetail(), listImage, product.getQuantity(), product.getPrice(), product.getCount_buy(), product.getAccount().getUsername(), product.getCreated_at());
+			listProductDTO.add(productDTO);
+			
 		}
 		
-		if (currentPage < 0 || currentPage > (productService.getCountProducts())/2 + 1) {
-			currentPage = 0;
-		}
-		
-		int size = 2;
-		Pageable pageable = PageRequest.of(currentPage, size);
-		List<Product> listProduct = productService.getTop12Pagination(pageable);
 		if (listProduct.isEmpty()) {
-			return new ResponseEntity<List<Product>>(HttpStatus.NO_CONTENT);
+			return new ResponseEntity<List<ProductDTO>>(HttpStatus.NO_CONTENT);
 		} else {
-			return new ResponseEntity<List<Product>>(listProduct,HttpStatus.OK);
+			return new ResponseEntity<List<ProductDTO>>(listProductDTO, HttpStatus.OK);
 		}
-		
 	}
 	
 	//Get product by id
@@ -111,7 +129,7 @@ public class ProductController {
 				listImage.add(arrImage[i]);
 			}
 			
-			ProductDTO productDTO = new ProductDTO("success", objProduct.getId(), objProduct.getName(), objProduct.getCategory().getName(), objProduct.getDescription(), objProduct.getDetail(), listImage, objProduct.getQuantity(), objProduct.getPrice(),objProduct.getCount_buy(), objProduct.getAccount().getUsername(), objProduct.getCreated_at());
+			ProductDTO productDTO = new ProductDTO("success", objProduct.getName(), objProduct.getCategory().getName(), objProduct.getDescription(), objProduct.getDetail(), listImage, objProduct.getQuantity(), objProduct.getPrice(),objProduct.getCount_buy(), objProduct.getAccount().getUsername(), objProduct.getCreated_at());
 			
 			return new ResponseEntity<ProductDTO>(productDTO, HttpStatus.OK);
 		}
@@ -198,7 +216,7 @@ public class ProductController {
 					listPicture.add(arrPicture[i]);
 				}
 				
-				ProductDTO productDTO = new ProductDTO("success", objProduct.getId(), objProduct.getName(), objProduct.getCategory().getName(), objProduct.getDescription(), objProduct.getDetail(), listPicture, objProduct.getQuantity(), objProduct.getPrice(), objProduct.getCount_buy(), objProduct.getAccount().getUsername(), objProduct.getCreated_at());
+				ProductDTO productDTO = new ProductDTO("success", objProduct.getName(), objProduct.getCategory().getName(), objProduct.getDescription(), objProduct.getDetail(), listPicture, objProduct.getQuantity(), objProduct.getPrice(), objProduct.getCount_buy(), objProduct.getAccount().getUsername(), objProduct.getCreated_at());
 				
 				return new ResponseEntity<ProductDTO>(productDTO, HttpStatus.OK);
 			}

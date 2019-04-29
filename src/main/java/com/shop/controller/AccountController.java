@@ -56,23 +56,56 @@ public class AccountController {
 	
 	//Add
 	@PostMapping("add")
-	public ResponseEntity<Account> add(@RequestBody Account objAccount
-			){
+	public ResponseEntity<RegisterResponse> add(@RequestBody Account objAccount){
+			
 		Account newAccount = new Account(objAccount);
+		//Check exist username
+		if (accountService.getAccountByUsername(newAccount.getUsername()) != null) {
+			RegisterResponse response = new RegisterResponse("fail: exist this username " + newAccount.getUsername());
+			return new ResponseEntity<RegisterResponse>(response, HttpStatus.NOT_ACCEPTABLE);
+		}
+		
 		
 		Set<Role> role = objAccount.getRole();
 		for (Role item: role) {
 			newAccount.getRole().add(roleService.getRoleById(item.getId()));
 		}
 		
-		Set<Permission> listPermission = objAccount.getPermission();
-		for (Permission item: listPermission) {
-			newAccount.getPermission().add(permissionService.getPermissionById(item.getId()));
+		//Check role
+		boolean check = true;
+		for (Role item : newAccount.getRole()) {
+			if (item.getName().equals("ADMIN") || item.getName().equals("CUSTOMER")) {
+				check = false;
+				break;
+			}
+		}
+		//Check permission SHOP OWNER
+		boolean checkPermission = false;
+		for (Role item : newAccount.getRole()) {
+			if (item.getName().equals("SHOP OWNER")) {
+				checkPermission = true;
+				break;
+			}
+		}
+		if (check == false) {
+			RegisterResponse response = new RegisterResponse("fail");
+			return new ResponseEntity<RegisterResponse>(response, HttpStatus.NOT_ACCEPTABLE);
+		} else {
+			if (checkPermission == false) {
+				RegisterResponse response = new RegisterResponse("fail");
+				return new ResponseEntity<RegisterResponse>(response, HttpStatus.NOT_ACCEPTABLE);
+			} else {
+				Set<Permission> listPermission = objAccount.getPermission();
+				for (Permission item: listPermission) {
+					newAccount.getPermission().add(permissionService.getPermissionById(item.getId()));
+				}
+				
+				Account account = accountService.addAccount(newAccount);
+				RegisterResponse response = new RegisterResponse("success", account.getId());
+				return new ResponseEntity<RegisterResponse>(response, HttpStatus.OK);
+			}
 		}
 		
-		Account account = accountService.addAccount(newAccount);
-		
-		return new ResponseEntity<Account>(account, HttpStatus.OK);
 	}
 	
 	@PostMapping("register")
@@ -106,7 +139,7 @@ public class AccountController {
 		
 		List<AccountDTO> listAccountDTO = new ArrayList();
 		for (Account account : listAccount) {
-			AccountDTO objAccountDTO = new AccountDTO(account.getId(), account.getUsername(), account.getStatus(), account.getProfile());
+			AccountDTO objAccountDTO = new AccountDTO(account.getUsername(), account.getStatus(), account.getProfile());
 			for(Role role :account.getRole()) {
 				objAccountDTO.setRole(role.getName());
 			}
@@ -132,7 +165,7 @@ public class AccountController {
 	public ResponseEntity<AccountDTO> getAccount(@PathVariable("id") int id){
 		Account account = accountService.getAccountById(id);
 		if (account != null) {
-			AccountDTO accountDTO = new AccountDTO(id, account.getUsername(), account.getStatus(), account.getProfile());
+			AccountDTO accountDTO = new AccountDTO(account.getUsername(), account.getStatus(), account.getProfile());
 			for (Role role : account.getRole()) {
 				accountDTO.setRole(role.getName());
 			}

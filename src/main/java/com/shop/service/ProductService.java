@@ -2,13 +2,11 @@ package com.shop.service;
 
 import java.util.List;
 
-import org.springframework.data.domain.Pageable;
-
 import com.shop.entities.Product;
 
 public interface ProductService {
-	//Get top 12 product pagination
-	List<Product> getTop12Pagination(Pageable pageable);
+	//Get top 10 product
+	List<Product> getTop10Product();
 	
 	//Get count all products
 	int getCountProducts();

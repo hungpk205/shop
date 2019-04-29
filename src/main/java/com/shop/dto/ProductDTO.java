@@ -6,7 +6,6 @@ import java.util.List;
 public class ProductDTO {
 	
 	private String message;
-	private int id;
 	private String name;
 	private String category;
 	private String description;
@@ -25,12 +24,6 @@ public class ProductDTO {
 		this.message = message;
 	}
 	
-	public int getId() {
-		return id;
-	}
-	public void setId(int id) {
-		this.id = id;
-	}
 	public String getName() {
 		return name;
 	}
@@ -92,11 +85,10 @@ public class ProductDTO {
 		this.created_at = created_at;
 	}
 
-	public ProductDTO(String message, int id, String name, String category, String description, String detail, List<String> image,
+	public ProductDTO(String message, String name, String category, String description, String detail, List<String> image,
 			int quantity, float price, int count_buy, String created_by, Timestamp created_at) {
 		super();
 		this.message = message;
-		this.id = id;
 		this.name = name;
 		this.category = category;
 		this.description = description;

@@ -19,11 +19,6 @@ public class ProductServiceImpl implements ProductService {
 	private ProductRepository productRepo;
 	
 	@Override
-	public List<Product> getTop12Pagination(Pageable pageable) {
-		return productRepo.getTop12(pageable);
-	}
-
-	@Override
 	public int getCountProducts() {
 		return 0;
 	}
@@ -62,6 +57,11 @@ public class ProductServiceImpl implements ProductService {
 	@Override
 	public Product changeActive(Product objProduct) {
 		return productRepo.save(objProduct);
+	}
+
+	@Override
+	public List<Product> getTop10Product() {
+		return productRepo.getTop10Product();
 	}
 
 }
