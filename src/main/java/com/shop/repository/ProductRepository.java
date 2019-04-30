@@ -34,4 +34,8 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
 	@Query(value = "SELECT * FROM products ORDER BY created_at DESC LIMIT 0,10", nativeQuery = true)
 	List<Product> getTop10Product();
 	
+	//Get list product by id account
+	@Query(value = "SELECT * FROM products AS p INNER JOIN accounts AS ac ON p.created_by = ac.id WHERE ac.id =:id", nativeQuery = true)
+	List<Product> getProductByIdAccount(@Param("id") int id);
+	
 }

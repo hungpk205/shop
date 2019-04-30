@@ -29,4 +29,7 @@ public interface ProductService {
 	
 	//Change active product
 	Product changeActive(Product objProduct);
+	
+	//Get list product created by id account
+	List<Product> getProductByIdAccount(int id);
 }

@@ -1,14 +1,10 @@
 package com.shop.controller;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -24,14 +20,14 @@ import org.springframework.web.bind.annotation.RestController;
 import com.shop.dto.AccountDTO;
 import com.shop.entities.Account;
 import com.shop.entities.Permission;
+import com.shop.entities.Product;
 import com.shop.entities.Profile;
 import com.shop.entities.Role;
 import com.shop.response.MessageResponse;
 import com.shop.response.RegisterResponse;
 import com.shop.service.AccountService;
-import com.shop.service.FileStorageService;
 import com.shop.service.PermissionService;
-import com.shop.service.ProfileService;
+import com.shop.service.ProductService;
 import com.shop.service.RoleService;
 import com.shop.utils.MessengerUtils;
 
@@ -45,11 +41,9 @@ public class AccountController {
 	private RoleService roleService;
 	@Autowired
 	private PermissionService permissionService;
+	@Autowired
+	private ProductService productService;
 	
-	@Autowired
-	private FileStorageService fileStorageService;
-	@Autowired
-	private ProfileService profileService;
 	
 	
 	//Add
@@ -135,7 +129,7 @@ public class AccountController {
 	public ResponseEntity<List<AccountDTO>> getAll(){
 		List<Account> listAccount = accountService.listAccount();
 		
-		List<AccountDTO> listAccountDTO = new ArrayList();
+		List<AccountDTO> listAccountDTO = new ArrayList<>();
 		for (Account account : listAccount) {
 			AccountDTO objAccountDTO = new AccountDTO(account.getUsername(), account.getStatus(), account.getProfile());
 			for(Role role :account.getRole()) {
@@ -192,8 +186,23 @@ public class AccountController {
 			MessageResponse response = new MessageResponse("fail: not found this account");
 			return new ResponseEntity<MessageResponse>(response, HttpStatus.NOT_FOUND);
 		}
-		Profile profile = new Profile(account.getProfile().getId(), objProfile.getFullname(), objProfile.getEmail(), objProfile.getPhone(), objProfile.getAddress(), objProfile.getAvatar());
 		
+		Profile profile = account.getProfile();
+		if (!objProfile.getFullname().equals("")) {
+			profile.setFullname(objProfile.getFullname());
+		}
+		if (!objProfile.getAvatar().equals("")) {
+			profile.setAvatar(objProfile.getAvatar());
+		}
+		if (!objProfile.getEmail().equals("")) {
+			profile.setEmail(objProfile.getEmail());
+		}
+		if (!objProfile.getPhone().equals("")) {
+			profile.setPhone(objProfile.getPhone());
+		}
+		if (!objProfile.getAddress().equals("")) {
+			profile.setAddress(objProfile.getAddress());
+		}
 		
 		account.setProfile(profile);
 		accountService.editAccount(account);
@@ -213,20 +222,20 @@ public class AccountController {
 		if (objAccount == null) {
 			MessengerUtils msg = new MessengerUtils("false", "Not exist account id " + id);
 			return new ResponseEntity<MessengerUtils>(msg, HttpStatus.NOT_ACCEPTABLE);
+		}	
+		//Delete product created by account
+		List<Product> listProduct = productService.getProductByIdAccount(id);
+		for (Product product : listProduct) {
+			productService.deleteProductById(product.getId());
 		}
 		
 		
-			//Delete account profile
-			//profileService.deleteProfile(objAccount.getProfile());
-			
-			//Delete 
-			
-			//Delete account
-			accountService.deleteAccount(objAccount);
-			
-			
-			MessengerUtils msg = new MessengerUtils("true", "Deleted account id " + id);
-			return new ResponseEntity<MessengerUtils>(msg, HttpStatus.OK);
+		//Delete account
+		accountService.deleteAccount(objAccount);
+		
+		
+		MessengerUtils msg = new MessengerUtils("true", "Deleted account id " + id);
+		return new ResponseEntity<MessengerUtils>(msg, HttpStatus.OK);
 		
 	}
 
