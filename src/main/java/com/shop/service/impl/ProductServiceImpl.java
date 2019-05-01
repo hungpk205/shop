@@ -72,4 +72,9 @@ public class ProductServiceImpl implements ProductService {
 		return productRepo.getProductByIdCategory(id);
 	}
 
+	@Override
+	public boolean CheckExistProduct(int id) {
+		return productRepo.existsById(id);
+	}
+
 }

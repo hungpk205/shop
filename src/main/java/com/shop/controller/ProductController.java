@@ -113,12 +113,15 @@ public class ProductController {
 	//Get product by id
 	@GetMapping("{id}")
 	public ResponseEntity<ProductDTO> getProduct(@PathVariable("id") int id){
-		Product objProduct = productService.getOneProduct(id);
-		if (objProduct == null) {
+		//Check product
+		if (!productService.CheckExistProduct(id)) {
 			ProductDTO productDTO = new ProductDTO();
 			productDTO.setMessage("fail: not found");
 			return new ResponseEntity<ProductDTO>(productDTO, HttpStatus.NOT_FOUND);
+			
 		} else {
+			Product objProduct = productService.getOneProduct(id);
+			
 			List<String> listImage = new ArrayList<>();
 			String dbImage = objProduct.getPicture();
 			String[] arrImage = dbImage.split(",");

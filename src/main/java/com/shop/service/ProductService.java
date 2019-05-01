@@ -35,4 +35,7 @@ public interface ProductService {
 	
 	//Get list product of category
 	List<Product> getProductOfCategory(int id);
+	
+	//Check exist product
+	boolean CheckExistProduct(int id);
 }

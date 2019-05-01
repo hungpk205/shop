@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import com.shop.response.PictureUploadResponse;
 import com.shop.response.UploadFileResponse;
 import com.shop.service.FileStorageService;
 
@@ -47,21 +48,28 @@ public class UploadFileController {
 	}
 	
 	@PostMapping("uploadMultipart")
-	public ResponseEntity<List<UploadFileResponse>> uploadMultipart (@RequestParam("image") MultipartFile[] image){
+	public ResponseEntity<PictureUploadResponse> uploadMultipart (@RequestParam("image") MultipartFile[] image){
 		List<UploadFileResponse> list = new ArrayList<>();
+		
+		String picture = "";
 		//Check name
 		if (image == null) {
-			return new ResponseEntity<List<UploadFileResponse>>(HttpStatus.NOT_ACCEPTABLE);
+			
+			PictureUploadResponse response = new PictureUploadResponse("fail", null);
+			return new ResponseEntity<PictureUploadResponse>(response, HttpStatus.NOT_ACCEPTABLE);
 		} else {
 			//Upload image
 			for (MultipartFile multipartFile : image) {
 				String fileName = fileStorageService.storeFile(multipartFile);
 				String fileDownloadURI = ServletUriComponentsBuilder.fromCurrentContextPath().path("api/downloadFile/").path(fileName).toUriString();
+				picture += fileDownloadURI + ",";
+				
 				UploadFileResponse response = new UploadFileResponse(fileName, fileDownloadURI, multipartFile.getContentType(), multipartFile.getSize());
 				list.add(response);
 			}
 			
-			return new ResponseEntity<List<UploadFileResponse>>(list,HttpStatus.OK);
+			PictureUploadResponse response = new PictureUploadResponse("success", picture);
+			return new ResponseEntity<PictureUploadResponse>(response,HttpStatus.OK);
 		}
 	}
 	
