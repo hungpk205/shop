@@ -16,7 +16,7 @@ public class ProductDTO {
 	private float price;
 	private int count_buy;
 	private String created_by;
-	private Timestamp created_at;
+	private String created_at;
 	
 	public int getId() {
 		return id;
@@ -86,15 +86,15 @@ public class ProductDTO {
 	public void setCreated_by(String created_by) {
 		this.created_by = created_by;
 	}
-	public Timestamp getCreated_at() {
+	public String getCreated_at() {
 		return created_at;
 	}
-	public void setCreated_at(Timestamp created_at) {
+	public void setCreated_at(String created_at) {
 		this.created_at = created_at;
 	}
 
 	public ProductDTO(String message,int id, String name, String category, String description, String detail, List<String> image,
-			int quantity, float price, int count_buy, String created_by, Timestamp created_at) {
+			int quantity, float price, int count_buy, String created_by, String created_at) {
 		super();
 		this.id = id;
 		this.message = message;
