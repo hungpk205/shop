@@ -67,4 +67,9 @@ public class ProductServiceImpl implements ProductService {
 		return productRepo.getProductByIdAccount(id);
 	}
 
+	@Override
+	public List<Product> getProductOfCategory(int id) {
+		return productRepo.getProductByIdCategory(id);
+	}
+
 }

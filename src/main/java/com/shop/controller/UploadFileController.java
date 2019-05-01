@@ -46,7 +46,7 @@ public class UploadFileController {
 		}
 	}
 	
-	@PostMapping("multipartFile")
+	@PostMapping("uploadMultipart")
 	public ResponseEntity<List<UploadFileResponse>> uploadMultipart (@RequestParam("image") MultipartFile[] image){
 		List<UploadFileResponse> list = new ArrayList<>();
 		//Check name

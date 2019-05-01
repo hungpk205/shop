@@ -52,4 +52,9 @@ public class AccountServiceImpl implements AccountService {
 		return accountRepo.getAccountByUsername(username);
 	}
 
+	@Override
+	public boolean CheckExistById(int id) {
+		return accountRepo.existsById(id);
+	}
+
 }

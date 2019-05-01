@@ -2,9 +2,12 @@ package com.shop.controller;
 
 import java.util.List;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -57,20 +60,26 @@ public class CategoryController {
 	
 	//Add new category
 	@PostMapping("add")
-	public ResponseEntity<CategoryDTO> add(@RequestBody Category objCat){
-		//Check name
-		if ("".equals(objCat.getName()) || (categoryService.getCategoryByName(objCat.getName()) != null )) {
-			CategoryDTO catDTO = new CategoryDTO();
-			catDTO.setSuccess("false");
+	public ResponseEntity<CategoryDTO> add(@Valid @RequestBody Category objCat, BindingResult br){
+		//Check empty value
+		if (br.hasErrors()) {
+			CategoryDTO catDTO = new CategoryDTO("false", null, null);
 			return new ResponseEntity<CategoryDTO>(catDTO, HttpStatus.NOT_ACCEPTABLE);
-		} else {
+		}
+		
+		//Check name
+		//if ("".equals(objCat.getName()) || (categoryService.getCategoryByName(objCat.getName()) != null )) {
+		//	CategoryDTO catDTO = new CategoryDTO();
+		//	catDTO.setSuccess("false");
+		//	return new ResponseEntity<CategoryDTO>(catDTO, HttpStatus.NOT_ACCEPTABLE);
+		//} else {
 			//Add this category
 			
 			categoryService.addNewCategory(objCat);
 			CategoryDTO catDTO = new CategoryDTO("true", objCat.getName(), objCat.getImage());
 			return new ResponseEntity<CategoryDTO>(catDTO,HttpStatus.OK);
 			
-		}
+		//}
 	}
 	
 	//Edit category
@@ -80,16 +89,15 @@ public class CategoryController {
 		if (cat == null) {
 			return new ResponseEntity<CategoryDTO>(HttpStatus.NOT_FOUND);
 		} else {
-			if ("".equals(objCat.getName())) {
-				return new ResponseEntity<CategoryDTO>(HttpStatus.NOT_ACCEPTABLE);
-			} else {
+			if (!objCat.getName().equals("")) {
 				cat.setName(objCat.getName());
+			} 
+			if (!objCat.getImage().equals("")) {
 				cat.setImage(objCat.getImage());
-				
-				Category catEdited =  categoryService.editCategory(cat);
-				CategoryDTO catDTO = new CategoryDTO("true", catEdited.getName(), objCat.getImage());
-				return new ResponseEntity<CategoryDTO>(catDTO,HttpStatus.OK);
 			}
+			Category catEdited =  categoryService.editCategory(cat);
+			CategoryDTO catDTO = new CategoryDTO("true", catEdited.getName(), objCat.getImage());
+			return new ResponseEntity<CategoryDTO>(catDTO,HttpStatus.OK);
 		}
 	}
 	

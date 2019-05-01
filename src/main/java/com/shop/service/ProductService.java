@@ -32,4 +32,7 @@ public interface ProductService {
 	
 	//Get list product created by id account
 	List<Product> getProductByIdAccount(int id);
+	
+	//Get list product of category
+	List<Product> getProductOfCategory(int id);
 }

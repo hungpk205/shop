@@ -46,4 +46,9 @@ public class CategoryServiceImpl implements CategoryService {
 		return categoryRepo.getCategoryByName(name);
 	}
 
+	@Override
+	public boolean CheckExitCategoryById(int id) {
+		return categoryRepo.existsById(id);
+	}
+
 }

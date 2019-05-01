@@ -11,6 +11,9 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
@@ -21,16 +24,23 @@ public class Product {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
+	
+	@NotBlank
 	@Column
 	private String name;
+	@NotBlank
 	@Column
 	private String description;
+	@NotBlank
 	@Column
 	private String detail;
+	@NotBlank
 	@Column
 	private String picture;
+	@NotNull
 	@Column
 	private int quantity;
+	@NotNull
 	@Column
 	private float price;
 	@Column

@@ -23,4 +23,7 @@ public interface CategoryService {
 	
 	//Delete category by Id
 	void deleteCategory(int id);
+	
+	//Exist category by id
+	boolean CheckExitCategoryById(int id);
 }

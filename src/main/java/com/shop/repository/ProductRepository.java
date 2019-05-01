@@ -38,4 +38,8 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
 	@Query(value = "SELECT * FROM products AS p INNER JOIN accounts AS ac ON p.created_by = ac.id WHERE ac.id =:id", nativeQuery = true)
 	List<Product> getProductByIdAccount(@Param("id") int id);
 	
+	//Get list product by id category
+	@Query(value = "SELECT * FROM products AS p INNER JOIN categories AS c ON p.id_category = c.id WHERE c.id =:id", nativeQuery = true)
+	List<Product> getProductByIdCategory(@Param("id") int id);
+	
 }

@@ -25,4 +25,7 @@ public interface AccountService {
 	
 	//Delete account by id
 	void deleteAccount(Account objAccount);
+	
+	//Exist by id
+	boolean CheckExistById(int id);
 }
