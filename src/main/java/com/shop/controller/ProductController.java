@@ -317,18 +317,17 @@ public class ProductController {
 	//Delete Product ~ Change active product
 	@DeleteMapping("{id}")
 	public ResponseEntity<MessageResponse> changeActiveProduct(@PathVariable("id") int id){
-		Product objProduct = productService.getOneProduct(id);
-		if (objProduct == null) {
-			MessageResponse msg = new MessageResponse("fail: not found");
+		if (productService.CheckExistProduct(id)) {
+			MessageResponse msg = new MessageResponse("fail: not found product id " + id);
 			return new ResponseEntity<MessageResponse>(msg, HttpStatus.NOT_FOUND);
-		} else {
-			//Change active
-			objProduct.setActive(0);
-			productService.changeActive(objProduct);
-			
-			MessageResponse msg = new MessageResponse("success");
-			return new ResponseEntity<MessageResponse>(msg, HttpStatus.OK);
 		}
+		Product objProduct = productService.getOneProduct(id);
+		//Change active
+		objProduct.setActive(0);
+		productService.changeActive(objProduct);
+		
+		MessageResponse msg = new MessageResponse("success");
+		return new ResponseEntity<MessageResponse>(msg, HttpStatus.OK);
 	}
 	
 }
