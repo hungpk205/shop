@@ -1,5 +1,8 @@
 package com.shop.controller;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -33,14 +36,16 @@ public class LoginController {
 			for (Role item : accountLogin.getRole()) {
 				accountDTO.setRole(item.getName());
 			}
+			List<String> permission = new ArrayList<>();
 			for (Permission item : accountLogin.getPermission()) {
-				accountDTO.getPermission().add(item.getName());
+				permission.add(item.getName());
 			}
+			accountDTO.setPermission(permission);
 			
 			return new ResponseEntity<AccountDTO>(accountDTO, HttpStatus.OK);
 		} else {
-			
-			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+			AccountDTO accountDTO = new AccountDTO();
+			return new ResponseEntity<AccountDTO>(accountDTO,HttpStatus.NOT_FOUND);
 		}
 	}
 }
