@@ -176,7 +176,7 @@ public class ProductController {
 
 	//Add one product
 	@PostMapping("add/{id_account}")
-	public ResponseEntity<CreateResponse> add( @PathVariable("id_account") int id_account, @Valid @RequestBody Product objProduct, BindingResult br){
+	public ResponseEntity<CreateResponse> add( @PathVariable("id_account") int id_account, @Valid @RequestBody Product objProduct){
 			
 		if (!categoryService.CheckExitCategoryById(objProduct.getCategory().getId())) {
 			CreateResponse response = new CreateResponse("fail: not exist category id " + objProduct.getCategory().getId());
@@ -186,10 +186,10 @@ public class ProductController {
 		Category category = categoryService.getCateogryById(objProduct.getCategory().getId());
 				
 		//Check valid
-		if (br.hasErrors()) {
+		/*if (br.hasErrors()) {
 			CreateResponse response = new CreateResponse("fail: invalid");
 			return new ResponseEntity<CreateResponse>(response,HttpStatus.NOT_ACCEPTABLE);
-		}
+		}*/
 		
 		//Check exist account
 		if (!accountService.CheckExistById(id_account)) {
