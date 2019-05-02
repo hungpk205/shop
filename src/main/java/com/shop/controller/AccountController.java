@@ -131,7 +131,7 @@ public class AccountController {
 		
 		List<AccountDTO> listAccountDTO = new ArrayList<>();
 		for (Account account : listAccount) {
-			AccountDTO objAccountDTO = new AccountDTO(account.getUsername(), account.getStatus(), account.getProfile());
+			AccountDTO objAccountDTO = new AccountDTO(account.getId(), account.getUsername(), account.getStatus(), account.getProfile());
 			for(Role role :account.getRole()) {
 				objAccountDTO.setRole(role.getName());
 			}
@@ -157,7 +157,7 @@ public class AccountController {
 	public ResponseEntity<AccountDTO> getAccount(@PathVariable("id") int id){
 		Account account = accountService.getAccountById(id);
 		if (account != null) {
-			AccountDTO accountDTO = new AccountDTO(account.getUsername(), account.getStatus(), account.getProfile());
+			AccountDTO accountDTO = new AccountDTO(account.getId(), account.getUsername(), account.getStatus(), account.getProfile());
 			for (Role role : account.getRole()) {
 				accountDTO.setRole(role.getName());
 			}

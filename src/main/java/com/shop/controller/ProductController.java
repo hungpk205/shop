@@ -1,18 +1,13 @@
 package com.shop.controller;
 
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -34,15 +29,12 @@ import com.shop.response.CreateResponse;
 import com.shop.response.MessageResponse;
 import com.shop.service.AccountService;
 import com.shop.service.CategoryService;
-import com.shop.service.FileStorageService;
 import com.shop.service.PermissionService;
 import com.shop.service.ProductService;
 
 @RestController
 @RequestMapping("api/product")
 public class ProductController {
-	
-	private static final Logger logger = LoggerFactory.getLogger(ProductController.class);
 	
 	@Autowired
 	private ProductService productService;
@@ -56,10 +48,7 @@ public class ProductController {
 	@Autowired
 	private PermissionService permissionService;
 	
-	@Autowired
-	private FileStorageService fileStorageService;
-	
-	
+
 	@GetMapping("all")
 	public ResponseEntity<List<ProductDTO>> getAll(){
 		List<Product> listProduct = productService.getAll();
