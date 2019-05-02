@@ -26,21 +26,27 @@ public class Product {
 	@NotBlank
 	@Column
 	private String name;
+	
 	@NotBlank
 	@Column
 	private String description;
+	
 	@NotBlank
 	@Column
 	private String detail;
+	
 	@NotBlank
 	@Column
 	private String picture;
+	
 	@NotNull
 	@Column
 	private int quantity;
+	
 	@NotNull
 	@Column
 	private float price;
+	
 	@Column
 	private int count_buy;
 	@Column

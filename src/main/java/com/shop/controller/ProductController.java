@@ -317,7 +317,7 @@ public class ProductController {
 	//Delete Product ~ Change active product
 	@DeleteMapping("{id}")
 	public ResponseEntity<MessageResponse> changeActiveProduct(@PathVariable("id") int id){
-		if (productService.CheckExistProduct(id)) {
+		if (!productService.CheckExistProduct(id)) {
 			MessageResponse msg = new MessageResponse("fail: not found product id " + id);
 			return new ResponseEntity<MessageResponse>(msg, HttpStatus.NOT_FOUND);
 		}
