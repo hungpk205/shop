@@ -14,6 +14,7 @@ public interface ProductService {
 	//Get product by id
 	Product getOneProduct(int id);
 	
+	//Get all product
 	List<Product> getAll();
 	
 	//Delete product by id
@@ -38,4 +39,7 @@ public interface ProductService {
 	
 	//Check exist product
 	boolean CheckExistProduct(int id);
+	
+	//Edit product
+	Product editProduct(Product objProduct);
 }

@@ -77,4 +77,9 @@ public class ProductServiceImpl implements ProductService {
 		return productRepo.existsById(id);
 	}
 
+	@Override
+	public Product editProduct(Product objProduct) {
+		return productRepo.save(objProduct);
+	}
+
 }
