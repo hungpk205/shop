@@ -22,6 +22,7 @@ public class Transaction {
 	private Integer id;
 	
 	@ManyToOne
+	@JoinColumn(name = "id_account")
 	private Account account;
 	
 	@Column

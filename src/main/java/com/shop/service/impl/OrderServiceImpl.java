@@ -20,5 +20,10 @@ public class OrderServiceImpl implements OrderService {
 		return orderRepo.findAll();
 	}
 
+	@Override
+	public List<Order> getOrderOfShop(int id_shop) {
+		return orderRepo.getOrderOfShop(id_shop);
+	}
+
 
 }

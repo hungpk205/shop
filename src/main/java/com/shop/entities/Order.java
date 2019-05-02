@@ -31,4 +31,56 @@ public class Order {
 	private float amount;
 	@Column
 	private int status;
+	public Integer getId() {
+		return id;
+	}
+	public void setId(Integer id) {
+		this.id = id;
+	}
+	public Product getProduct() {
+		return product;
+	}
+	public void setProduct(Product product) {
+		this.product = product;
+	}
+	public int getQuantity() {
+		return quantity;
+	}
+	public void setQuantity(int quantity) {
+		this.quantity = quantity;
+	}
+	public float getAmount() {
+		return amount;
+	}
+	public void setAmount(float amount) {
+		this.amount = amount;
+	}
+	public int getStatus() {
+		return status;
+	}
+	public void setStatus(int status) {
+		this.status = status;
+	}
+	public Order(Integer id, Transaction transaction, Product product, int quantity, float amount, int status) {
+		super();
+		this.id = id;
+		this.transaction = transaction;
+		this.product = product;
+		this.quantity = quantity;
+		this.amount = amount;
+		this.status = status;
+	}
+	public Order(Integer id, Product product, int quantity, float amount, int status) {
+		super();
+		this.id = id;
+		this.product = product;
+		this.quantity = quantity;
+		this.amount = amount;
+		this.status = status;
+	}
+	public Order() {
+		super();
+	}
+	
+	
 }
