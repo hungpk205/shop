@@ -23,27 +23,27 @@ public class Product {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 	
-	//@NotBlank
+	@NotBlank
 	@Column
 	private String name;
 	
-	//@NotBlank
+	@NotBlank
 	@Column
 	private String description;
 	
-	//@NotBlank
+	@NotBlank
 	@Column
 	private String detail;
 	
-	//@NotBlank
+	@NotBlank
 	@Column
 	private String picture;
 	
-	//@NotNull
+	@NotNull
 	@Column
 	private int quantity;
 	
-	//@NotNull
+	@NotNull
 	@Column
 	private float price;
 	
