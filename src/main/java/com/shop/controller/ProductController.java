@@ -1,5 +1,6 @@
 package com.shop.controller;
 
+import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -233,6 +234,9 @@ public class ProductController {
 				newProduct.setPrice(objProduct.getPrice());
 				newProduct.setAccount(account);
 				newProduct.setPicture(objProduct.getPicture());
+				
+				Timestamp created_at = new Timestamp(System.currentTimeMillis());
+				newProduct.setCreated_at(created_at);
 				
 				//Save product
 				Product product = productService.addOneProduct(newProduct);
