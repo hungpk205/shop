@@ -24,39 +24,39 @@ public class Product {
 	private Integer id;
 	
 	@NotBlank
-	@Column
+	@Column(name = "name")
 	private String name;
 	
 	@NotBlank
-	@Column
+	@Column(name = "description")
 	private String description;
 	
 	@NotBlank
-	@Column
+	@Column(name = "detail")
 	private String detail;
 	
 	@NotBlank
-	@Column
+	@Column(name = "picture")
 	private String picture;
 	
 	@NotNull
-	@Column
+	@Column(name = "quantity")
 	private int quantity;
 	
 	@NotNull
-	@Column
+	@Column(name = "price")
 	private float price;
 	
-	@Column
+	@Column(name = "count_buy")
 	private int count_buy;
-	@Column
+	@Column(name = "active")
 	private int active;
 	
 	@ManyToOne
 	@JoinColumn(name = "created_by")
 	private Account account;
 	
-	@Column
+	@Column(name = "created_at")
 	private Timestamp created_at;
 	
 	@JsonIgnoreProperties("category")
