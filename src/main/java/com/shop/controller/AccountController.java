@@ -1,6 +1,7 @@
 package com.shop.controller;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -100,6 +101,8 @@ public class AccountController {
 		
 	}
 	
+	//Register mobile app
+	
 	@PostMapping("register")
 	public ResponseEntity<RegisterResponse> register(@RequestParam("username") String username, @RequestParam("password") String password){
 		if (accountService.getAccountByUsername(username) == null) {
@@ -111,6 +114,41 @@ public class AccountController {
 			account.getRole().add(role);
 			account.setProfile(new Profile());
 			account.setPermission(null);
+			Account accountSave =  accountService.addAccount(account);
+			
+			
+			RegisterResponse response = new RegisterResponse("success", accountSave.getId());
+			return new ResponseEntity<RegisterResponse>(response, HttpStatus.OK);
+			
+		} else {
+			RegisterResponse response = new RegisterResponse("fail");
+			return new ResponseEntity<RegisterResponse>(response, HttpStatus.NOT_ACCEPTABLE);
+		}
+	}
+	
+	//Register shop
+	@PostMapping("register/shop")
+	public ResponseEntity<RegisterResponse> registerShop(@RequestParam("username") String username, @RequestParam("password") String password){
+		if (accountService.getAccountByUsername(username) == null) {
+			Account account = new Account(null, username, password, 1);
+			
+			Role role = roleService.getRoleByName("SHOP OWNER");
+			account.getRole().add(role);
+			account.setProfile(new Profile());
+			
+			//Set permission
+			Permission p1 = permissionService.getPermissionByName("CREATE_PRODUCT");
+			Permission p2 = permissionService.getPermissionByName("EDIT_PRODUCT");
+			Permission p3 = permissionService.getPermissionByName("DEL_PRODUCT");
+			Permission p4 = permissionService.getPermissionByName("VIEW_ORDER");
+			
+			Set<Permission> permission = new HashSet<>();
+			permission.add(p1);
+			permission.add(p2);
+			permission.add(p3);
+			permission.add(p4);
+			
+			account.setPermission(permission);
 			Account accountSave =  accountService.addAccount(account);
 			
 			
