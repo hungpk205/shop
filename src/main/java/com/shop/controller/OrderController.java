@@ -23,6 +23,14 @@ public class OrderController {
 	@Autowired
 	private OrderService orderService;
 	
+	
+	@GetMapping("alll")
+	public ResponseEntity<List<Order>> getAlll(){
+		List<Order> listOrder = orderService.getAllOrder();
+		return new ResponseEntity<List<Order>>(listOrder, HttpStatus.OK);
+	}
+	
+	
 	@GetMapping("all")
 	public ResponseEntity<List<OrderDTO>> getAll(){
 		List<Order> listOrder = orderService.getAllOrder();
@@ -45,7 +53,7 @@ public class OrderController {
 				float price = order.getProduct().getPrice();
 				int count_buy = order.getProduct().getCount_buy();
 				String created_by = order.getProduct().getAccount().getUsername();
-				String created_at = new SimpleDateFormat("dd/MM/yyyy - hh:mm:ss").format(order.getProduct().getCreated_at());
+				String created_at = new SimpleDateFormat("dd/MM/yyyy").format(order.getProduct().getCreated_at());
 				
 				ProductDTO productDTO = new ProductDTO("success",id_product ,name_product,category, description, detail, image, quantity, price, count_buy, created_by, created_at);
 				
@@ -84,7 +92,7 @@ public class OrderController {
 				float price = order.getProduct().getPrice();
 				int count_buy = order.getProduct().getCount_buy();
 				String created_by = order.getProduct().getAccount().getUsername();
-				String created_at = new SimpleDateFormat("dd/MM/yyyy - hh:mm:ss").format(order.getProduct().getCreated_at());
+				String created_at = new SimpleDateFormat("dd/MM/yyyy").format(order.getProduct().getCreated_at());
 				
 				ProductDTO productDTO = new ProductDTO("success",id_product ,name_product,category, description, detail, image, quantity, price, count_buy, created_by, created_at);
 				

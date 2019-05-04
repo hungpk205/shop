@@ -1,13 +1,21 @@
 package com.shop.entities;
 
+import java.util.HashSet;
+import java.util.Set;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
 @Table(name = "orders")
@@ -16,10 +24,6 @@ public class Order {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
-	
-	@ManyToOne
-	@JoinColumn(name = "id_transaction")
-	private Transaction transaction;
 	
 	@ManyToOne
 	@JoinColumn(name = "id_product")
@@ -61,15 +65,11 @@ public class Order {
 	public void setStatus(int status) {
 		this.status = status;
 	}
-	public Order(Integer id, Transaction transaction, Product product, int quantity, float amount, int status) {
-		super();
-		this.id = id;
-		this.transaction = transaction;
-		this.product = product;
-		this.quantity = quantity;
-		this.amount = amount;
-		this.status = status;
-	}
+	
+	@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+	@ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.ALL}, mappedBy = "orders")
+	private Set<Transaction> transaction = new HashSet<>();
+	
 	public Order(Integer id, Product product, int quantity, float amount, int status) {
 		super();
 		this.id = id;
@@ -81,6 +81,7 @@ public class Order {
 	public Order() {
 		super();
 	}
+
 	
 	
 }

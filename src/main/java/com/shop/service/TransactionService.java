@@ -10,4 +10,7 @@ public interface TransactionService {
 	
 	//Get transaction of account
 	List<Transaction> getTransactionOfAccount(int id);
+	
+	//Add a transaction
+	Transaction addTransaction(Transaction objTransaction);
 }

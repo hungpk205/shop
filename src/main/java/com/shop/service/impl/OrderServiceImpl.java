@@ -25,5 +25,9 @@ public class OrderServiceImpl implements OrderService {
 		return orderRepo.getOrderOfShop(id_shop);
 	}
 
+	@Override
+	public Order AddOrder(Order objOrder) {
+		return orderRepo.save(objOrder);
+	}
 
 }

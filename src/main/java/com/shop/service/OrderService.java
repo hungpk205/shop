@@ -11,4 +11,7 @@ public interface OrderService {
 	//Get order of shop
 	List<Order> getOrderOfShop(int id_shop);
 	
+	//Add order
+	Order AddOrder(Order objOrder);
+	
 }

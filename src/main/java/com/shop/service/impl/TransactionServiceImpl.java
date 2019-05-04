@@ -25,4 +25,9 @@ public class TransactionServiceImpl implements TransactionService {
 		return transactionRepo.getTransactionOfCustomer(id);
 	}
 
+	@Override
+	public Transaction addTransaction(Transaction objTransaction) {
+		return transactionRepo.save(objTransaction);
+	}
+
 }
