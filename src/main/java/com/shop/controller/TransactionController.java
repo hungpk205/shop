@@ -25,6 +25,7 @@ import com.shop.entities.Order;
 import com.shop.entities.Payment;
 import com.shop.entities.Product;
 import com.shop.entities.Transaction;
+import com.shop.response.CreateResponse;
 import com.shop.response.MessageResponse;
 import com.shop.service.AccountService;
 import com.shop.service.OrderService;
@@ -139,7 +140,7 @@ public class TransactionController {
 	
 	//Add transaction
 	@PostMapping("add")
-	public ResponseEntity<MessageResponse> add(@RequestBody Transaction objTransaction){
+	public ResponseEntity<CreateResponse> add(@RequestBody Transaction objTransaction){
 		
 		Transaction newTransaction = new Transaction();
 		//Get buyer
@@ -173,12 +174,12 @@ public class TransactionController {
 		newTransaction.setOrder(listOrderAdd);
 		System.out.println("Size: " + listOrderAdd.size());
 		
-		transactionService.addTransaction(newTransaction);
+		Transaction transactionAdd = transactionService.addTransaction(newTransaction);
 		
 		
 		
-		MessageResponse msg = new MessageResponse("success");
-		return new ResponseEntity<MessageResponse>(msg, HttpStatus.OK);
+		CreateResponse response = new CreateResponse("success", transactionAdd.getId());
+		return new ResponseEntity<CreateResponse>(response, HttpStatus.OK);
 		
 	}
 }
