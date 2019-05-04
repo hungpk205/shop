@@ -63,7 +63,7 @@ public class ProductController {
 			for (int i = 0; i < arrImage.length; i++) {
 				listImage.add(arrImage[i]);
 			}
-			String time = new SimpleDateFormat("dd/MM/yyyy - HH:mm:ss").format(product.getCreated_at());
+			String time = new SimpleDateFormat("dd/MM/yyyy").format(product.getCreated_at());
 			ProductDTO productDTO = new ProductDTO("success",product.getId(), product.getName(), product.getCategory().getName(), product.getDescription(), product.getDetail(), listImage, product.getQuantity(), product.getPrice(), product.getCount_buy(), product.getAccount().getUsername(), time);
 			listProductDTO.add(productDTO);
 			
@@ -89,7 +89,7 @@ public class ProductController {
 			for (int i = 0; i < arrImage.length; i++) {
 				listImage.add(arrImage[i]);
 			}
-			String time = new SimpleDateFormat("dd/MM/yyyy - HH:mm:ss").format(product.getCreated_at());
+			String time = new SimpleDateFormat("dd/MM/yyyy").format(product.getCreated_at());
 			ProductDTO productDTO = new ProductDTO("success",product.getId(), product.getName(), product.getCategory().getName(), product.getDescription(), product.getDetail(), listImage, product.getQuantity(), product.getPrice(), product.getCount_buy(), product.getAccount().getUsername(), time);
 			listProductDTO.add(productDTO);
 			
@@ -120,7 +120,7 @@ public class ProductController {
 			for (int i = 0; i < arrImage.length; i++) {
 				listImage.add(arrImage[i]);
 			}
-			String time = new SimpleDateFormat("dd/MM/yyyy - HH:mm:ss").format(objProduct.getCreated_at());
+			String time = new SimpleDateFormat("dd/MM/yyyy").format(objProduct.getCreated_at());
 			ProductDTO productDTO = new ProductDTO("success",objProduct.getId(), objProduct.getName(), objProduct.getCategory().getName(), objProduct.getDescription(), objProduct.getDetail(), listImage, objProduct.getQuantity(), objProduct.getPrice(),objProduct.getCount_buy(), objProduct.getAccount().getUsername(), time);
 			
 			return new ResponseEntity<ProductDTO>(productDTO, HttpStatus.OK);
@@ -142,7 +142,7 @@ public class ProductController {
 				for (int i = 0; i < arrImage.length; i++) {
 					listImage.add(arrImage[i]);
 				}
-				String time = new SimpleDateFormat("dd/MM/yyyy - HH:mm:ss").format(product.getCreated_at());
+				String time = new SimpleDateFormat("dd/MM/yyyy").format(product.getCreated_at());
 				ProductDTO productDTO = new ProductDTO("success", product.getId(), product.getName(), product.getCategory().getName(), product.getDescription(), product.getDetail(), listImage, product.getQuantity(), product.getPrice(), product.getCount_buy(), product.getAccount().getUsername(), time);
 				listProductDTO.add(productDTO);
 			}
@@ -166,7 +166,7 @@ public class ProductController {
 				for (int i = 0; i < arrImage.length; i++) {
 					listImage.add(arrImage[i]);
 				}
-				String time = new SimpleDateFormat("dd/MM/yyyy - HH:mm:ss").format(product.getCreated_at());
+				String time = new SimpleDateFormat("dd/MM/yyyy").format(product.getCreated_at());
 				ProductDTO productDTO = new ProductDTO("success", product.getId(), product.getName(), product.getCategory().getName(), product.getDescription(), product.getDetail(), listImage, product.getQuantity(), product.getPrice(), product.getCount_buy(), product.getAccount().getUsername(), time);
 				listProductDTO.add(productDTO);
 			}

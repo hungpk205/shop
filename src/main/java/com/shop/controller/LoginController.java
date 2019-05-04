@@ -30,19 +30,24 @@ public class LoginController {
 		//System.out.println(objAccount.getUsername() + " " + objAccount.getPassword());
 		Account accountLogin  = accountService.GetAccountByUsernameAndPassword(objAccount.getUsername(), objAccount.getPassword());
 		
-		
 		if (accountLogin != null) {
-			AccountDTO accountDTO = new AccountDTO(accountLogin.getId(), accountLogin.getUsername(), accountLogin.getStatus(), accountLogin.getProfile());
-			for (Role item : accountLogin.getRole()) {
-				accountDTO.setRole(item.getName());
+			if (accountLogin.getStatus() == 0) {
+				AccountDTO accountDTO = new AccountDTO();
+				return new ResponseEntity<AccountDTO>(accountDTO,HttpStatus.NOT_ACCEPTABLE);
+			} else {
+				AccountDTO accountDTO = new AccountDTO(accountLogin.getId(), accountLogin.getUsername(), accountLogin.getStatus(), accountLogin.getProfile());
+				for (Role item : accountLogin.getRole()) {
+					accountDTO.setRole(item.getName());
+				}
+				List<String> permission = new ArrayList<>();
+				for (Permission item : accountLogin.getPermission()) {
+					permission.add(item.getName());
+				}
+				accountDTO.setPermission(permission);
+				
+				return new ResponseEntity<AccountDTO>(accountDTO, HttpStatus.OK);
 			}
-			List<String> permission = new ArrayList<>();
-			for (Permission item : accountLogin.getPermission()) {
-				permission.add(item.getName());
-			}
-			accountDTO.setPermission(permission);
 			
-			return new ResponseEntity<AccountDTO>(accountDTO, HttpStatus.OK);
 		} else {
 			AccountDTO accountDTO = new AccountDTO();
 			return new ResponseEntity<AccountDTO>(accountDTO,HttpStatus.NOT_FOUND);
