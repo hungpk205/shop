@@ -30,8 +30,8 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
 	
 	@Query(value = "SELECT * FROM products WHERE id_category =:idCat", nativeQuery = true)
 	List<Product> getListProductByIdCategory(@Param("idCat") int idCat);
-
-	@Query(value = "SELECT * FROM products ORDER BY created_at DESC LIMIT 0,10", nativeQuery = true)
+ 
+	@Query(value = "SELECT * FROM products WHERE active = 1 ORDER BY created_at DESC LIMIT 0,10", nativeQuery = true)
 	List<Product> getTop10Product();
 	
 	//Get list product by id account

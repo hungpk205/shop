@@ -234,6 +234,7 @@ public class ProductController {
 				newProduct.setPrice(objProduct.getPrice());
 				newProduct.setAccount(account);
 				newProduct.setPicture(objProduct.getPicture());
+				newProduct.setActive(1);
 				
 				Timestamp created_at = new Timestamp(System.currentTimeMillis());
 				newProduct.setCreated_at(created_at);
