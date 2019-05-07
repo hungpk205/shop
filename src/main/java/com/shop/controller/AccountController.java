@@ -11,7 +11,6 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -30,7 +29,6 @@ import com.shop.entities.Product;
 import com.shop.entities.Profile;
 import com.shop.entities.Role;
 import com.shop.payload.RegisterRequest;
-import com.shop.response.MessageResponse;
 import com.shop.response.RegisterResponse;
 import com.shop.service.AccountService;
 import com.shop.service.PermissionService;
@@ -114,9 +112,13 @@ public class AccountController {
 	@PostMapping("register")
 	public ResponseEntity<RegisterResponse> register(@RequestParam("username") String username, @RequestParam("password") String password){
 		if (accountService.getAccountByUsername(username) == null) {
-			Account account = new Account(null, username, password, 1);
 			
-			//Role role = roleService.getRoleByName("CUSTOMER");
+			//Encode password
+			String encodePassword = encoderPassword.encode(password);
+			
+			Account account = new Account(null, username, encodePassword, 1);
+			
+			
 			
 			Role role = roleService.getRoleByName("CUSTOMER");
 			account.getRole().add(role);
@@ -175,7 +177,23 @@ public class AccountController {
 	
 	//Get List Account
 	@GetMapping("all")
-	public ResponseEntity<List<AccountDTO>> getAll(){
+	public ResponseEntity<?> getAll(Principal user){
+		//Get account current
+		Account accountLogin = accountService.getAccountByUsername(user.getName());
+		//Check role
+		boolean isAdmin = false;
+		Set<Role> roles = accountLogin.getRole();
+		for (Role role : roles) {
+			if (role.getName().equals("ADMIN")) {
+				isAdmin = true;
+				break;
+			}
+		}
+		if (!isAdmin) {
+			MessengerUtils msg = new MessengerUtils("false", "Not have permission");
+			return new ResponseEntity<MessengerUtils>(msg, HttpStatus.FORBIDDEN);
+		}
+		
 		List<Account> listAccount = accountService.listAccount();
 		
 		List<AccountDTO> listAccountDTO = new ArrayList<>();
@@ -203,7 +221,28 @@ public class AccountController {
 	
 	//Get information account
 	@GetMapping("{id}")
-	public ResponseEntity<AccountDTO> getAccount(@PathVariable("id") int id){
+	public ResponseEntity<?> getAccount(Principal user,@PathVariable("id") int id){
+		//Get account current
+		Account accountLogin = accountService.getAccountByUsername(user.getName());
+		
+		//Admin and current user only see information
+		boolean isAdmin = false;
+		Set<Role> roles = accountLogin.getRole();
+		for (Role role : roles) {
+			if (role.getName().equals("ADMIN")) {
+				isAdmin = true;
+				break;
+			}
+		}
+		boolean isAccount = false;
+		if (accountLogin.getId().equals(id)) {
+			isAccount = true;
+		}
+		if (!isAdmin && !isAccount) {
+			MessengerUtils msg = new MessengerUtils("false", "Not have permission");
+			return new ResponseEntity<MessengerUtils>(msg, HttpStatus.FORBIDDEN);
+		}
+		
 		Account account = accountService.getAccountById(id);
 		if (account != null) {
 			AccountDTO accountDTO = new AccountDTO(account.getId(), account.getUsername(), account.getStatus(), account.getProfile());
@@ -260,19 +299,20 @@ public class AccountController {
 		}
 		
 		Profile profile = account.getProfile();
-		if (!objProfile.getFullname().equals("")) {
+		
+		if (objProfile.getFullname() != null && !objProfile.getFullname().equals("")) {
 			profile.setFullname(objProfile.getFullname());
 		}
-		if (!objProfile.getAvatar().equals("")) {
+		if (objProfile.getAvatar() != null && !objProfile.getAvatar().equals("")) {
 			profile.setAvatar(objProfile.getAvatar());
 		}
-		if (!objProfile.getEmail().equals("")) {
+		if (objProfile.getEmail() != null && !objProfile.getEmail().equals("")) {
 			profile.setEmail(objProfile.getEmail());
 		}
-		if (!objProfile.getPhone().equals("")) {
+		if (objProfile.getPhone() != null && !objProfile.getPhone().equals("")) {
 			profile.setPhone(objProfile.getPhone());
 		}
-		if (!objProfile.getAddress().equals("")) {
+		if (objProfile.getAddress() != null && !objProfile.getAddress().equals("")) {
 			profile.setAddress(objProfile.getAddress());
 		}
 		

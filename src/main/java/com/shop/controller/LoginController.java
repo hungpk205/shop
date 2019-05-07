@@ -1,27 +1,21 @@
 package com.shop.controller;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Set;
 
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.shop.dto.AccountDTO;
 import com.shop.entities.Account;
-import com.shop.entities.Permission;
 import com.shop.entities.Role;
 import com.shop.payload.LoginRequest;
 import com.shop.response.JwtAuthenticationResponse;
@@ -70,7 +64,7 @@ public class LoginController {
 				
 	}
 	
-	//Login admin
+	//Login shop
 		@PostMapping("login-shop")
 		public ResponseEntity<?> authenticateShop(@Valid @RequestBody LoginRequest loginRequest){
 			
@@ -99,7 +93,7 @@ public class LoginController {
 		}
 		
 		
-		//Login admin
+		//Login customer
 		@PostMapping("login-customer")
 		public ResponseEntity<?> authenticateCustomer(@Valid @RequestBody LoginRequest loginRequest){
 			

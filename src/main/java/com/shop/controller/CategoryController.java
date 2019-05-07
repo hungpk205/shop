@@ -1,6 +1,5 @@
 package com.shop.controller;
 
-import java.nio.file.attribute.UserPrincipal;
 import java.security.Principal;
 import java.util.List;
 import java.util.Set;
@@ -11,7 +10,6 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.annotation.Secured;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,10 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.shop.dto.CategoryDTO;
 import com.shop.entities.Account;
 import com.shop.entities.Category;
-import com.shop.entities.Product;
 import com.shop.entities.Role;
-import com.shop.security.CurrentUser;
-import com.shop.security.JwtTokenProvider;
 import com.shop.service.AccountService;
 import com.shop.service.CategoryService;
 import com.shop.service.ProductService;
@@ -80,8 +75,21 @@ public class CategoryController {
 			return new ResponseEntity<CategoryDTO>(catDTO, HttpStatus.NOT_ACCEPTABLE);
 		}
 		
-		//System.out.println(userp.getName());
-		System.out.println(user.getName());
+		//Check role
+		Account accountLogin = accountSerivce.getAccountByUsername(user.getName());
+		boolean isAdmin = false;
+		Set<Role> roles = accountLogin.getRole();
+		for (Role role : roles) {
+			if (role.getName().equals("ADMIN")) {
+				isAdmin = true;
+				break;
+			}
+		}
+		if (!isAdmin) {
+			CategoryDTO catDTO = new CategoryDTO("false", null, null);
+			return new ResponseEntity<CategoryDTO>(catDTO,HttpStatus.FORBIDDEN);
+		}
+		
 		
 		
 		categoryService.addNewCategory(objCat);
@@ -92,10 +100,28 @@ public class CategoryController {
 	
 	//Edit category
 	@PutMapping("{idCat}")
-	public ResponseEntity<CategoryDTO> edit(@PathVariable("idCat") int idCat, @RequestBody Category objCat){
+	public ResponseEntity<MessengerUtils> edit(Principal user ,@PathVariable("idCat") int idCat, @RequestBody Category objCat){
 		Category cat = categoryService.getCateogryById(idCat);
+		
+		//Check role
+		Account accountLogin = accountSerivce.getAccountByUsername(user.getName());
+		boolean isAdmin = false;
+		Set<Role> roles = accountLogin.getRole();
+		for (Role role : roles) {
+			if (role.getName().equals("ADMIN")) {
+				isAdmin = true;
+				break;
+			}
+		}
+		if (!isAdmin) {
+			MessengerUtils msg = new MessengerUtils("fail", "Not have role");
+			return new ResponseEntity<MessengerUtils>(msg,HttpStatus.FORBIDDEN);
+		}
+		
+		
 		if (cat == null) {
-			return new ResponseEntity<CategoryDTO>(HttpStatus.NOT_FOUND);
+			MessengerUtils msg = new MessengerUtils("fail", "Not found category id " + idCat);
+			return new ResponseEntity<MessengerUtils>(msg, HttpStatus.NOT_FOUND);
 		} else {
 			if (!objCat.getName().equals("")) {
 				cat.setName(objCat.getName());
@@ -103,15 +129,33 @@ public class CategoryController {
 			if (!objCat.getImage().equals("")) {
 				cat.setImage(objCat.getImage());
 			}
-			Category catEdited =  categoryService.editCategory(cat);
-			CategoryDTO catDTO = new CategoryDTO("true", catEdited.getName(), objCat.getImage());
-			return new ResponseEntity<CategoryDTO>(catDTO,HttpStatus.OK);
+			categoryService.editCategory(cat);
+			
+			MessengerUtils msg = new MessengerUtils("true", "Edited category id " + idCat);
+			return new ResponseEntity<MessengerUtils>(msg,HttpStatus.OK);
 		}
 	}
 	
 	//Delete category
 	@DeleteMapping("{idCat}")
-	public ResponseEntity<MessengerUtils> delete(@PathVariable("idCat") int idCat){
+	public ResponseEntity<MessengerUtils> delete(Principal user ,@PathVariable("idCat") int idCat){
+		
+		//Check role
+		Account accountLogin = accountSerivce.getAccountByUsername(user.getName());
+		boolean isAdmin = false;
+		Set<Role> roles = accountLogin.getRole();
+		for (Role role : roles) {
+			if (role.getName().equals("ADMIN")) {
+				isAdmin = true;
+				break;
+			}
+		}
+		if (!isAdmin) {
+			MessengerUtils msg = new MessengerUtils("false", "Not have role");
+			return new ResponseEntity<MessengerUtils>(msg, HttpStatus.FORBIDDEN);
+		}
+		
+		//Check exist category
 		if (categoryService.getCateogryById(idCat) == null) {
 			MessengerUtils msg = new MessengerUtils("false", "Not found category id " + idCat);
 			return new ResponseEntity<MessengerUtils>(msg, HttpStatus.NOT_FOUND);
@@ -127,14 +171,17 @@ public class CategoryController {
 		}
 	}
 	
-	@GetMapping("product/{idCat}")
-	public ResponseEntity<List<Product>> getListProductinCategory(@PathVariable("idCat") int idCat){
+	/*@GetMapping("product/{idCat}")
+	public ResponseEntity<List<ProductDTO>> getListProductinCategory(@PathVariable("idCat") int idCat){
 		List<Product> listProduct = prodcutService.getListProductByIdCategory(idCat);
 		if (listProduct.isEmpty()) {
 			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 		} else {
-			return new ResponseEntity<List<Product>>(listProduct, HttpStatus.OK);
+			List<ProductDTO> listProductDTO = new ArrayList<>();
+			
+			
+			return new ResponseEntity<List<ProductDTO>>(listProductDTO, HttpStatus.OK);
 		}
-	}
+	}*/
 	
 }

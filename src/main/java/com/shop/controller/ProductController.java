@@ -1,5 +1,6 @@
 package com.shop.controller;
 
+import java.security.Principal;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -28,11 +29,11 @@ import com.shop.entities.Permission;
 import com.shop.entities.Product;
 import com.shop.entities.Role;
 import com.shop.response.CreateResponse;
-import com.shop.response.MessageResponse;
 import com.shop.service.AccountService;
 import com.shop.service.CategoryService;
 import com.shop.service.PermissionService;
 import com.shop.service.ProductService;
+import com.shop.utils.MessengerUtils;
 
 @RestController
 @RequestMapping("api/product")
@@ -127,63 +128,122 @@ public class ProductController {
 		}
 	}
 	
-	//Get product by id account
-		@GetMapping("account/{id}")
-		public ResponseEntity<List<ProductDTO>> GetProductByIdAccount(@PathVariable("id") int id){
-			List<Product> listProduct = productService.getProductByIdAccount(id);
-			if(listProduct.isEmpty()) {
-				return new ResponseEntity<List<ProductDTO>>(HttpStatus.NOT_FOUND);
-			}
-			
-			List<ProductDTO> listProductDTO = new ArrayList<>();
-			for (Product product : listProduct) {
-				List<String> listImage = new ArrayList<>();
-				String[] arrImage = product.getPicture().split(",");
-				for (int i = 0; i < arrImage.length; i++) {
-					listImage.add(arrImage[i]);
-				}
-				String time = new SimpleDateFormat("dd/MM/yyyy").format(product.getCreated_at());
-				ProductDTO productDTO = new ProductDTO("success", product.getId(), product.getName(), product.getCategory().getName(), product.getDescription(), product.getDetail(), listImage, product.getQuantity(), product.getPrice(), product.getCount_buy(), product.getAccount().getUsername(), time);
-				listProductDTO.add(productDTO);
-			}
-			
-			return new ResponseEntity<List<ProductDTO>>(listProductDTO,HttpStatus.OK);
+	//Get product of shop
+	@GetMapping("shop")
+	public ResponseEntity<List<ProductDTO>> GetProductByIdAccount(Principal user){
+		//Get account current
+		Account accountLogin = accountService.getAccountByUsername(user.getName());
+		
+		
+		List<Product> listProduct = productService.getProductByIdAccount(accountLogin.getId());
+		if(listProduct.isEmpty()) {
+			return new ResponseEntity<List<ProductDTO>>(HttpStatus.NOT_FOUND);
 		}
 		
-		//Get product by id category
-		@GetMapping("category/{id}")
-		public ResponseEntity<List<ProductDTO>> GetProductByIdCategory(@PathVariable("id") int id){
-			List<Product> listProduct = productService.getProductOfCategory(id);
-			
-			if(listProduct.isEmpty()) {
-				return new ResponseEntity<List<ProductDTO>>(HttpStatus.NOT_FOUND);
+		List<ProductDTO> listProductDTO = new ArrayList<>();
+		for (Product product : listProduct) {
+			List<String> listImage = new ArrayList<>();
+			String[] arrImage = product.getPicture().split(",");
+			for (int i = 0; i < arrImage.length; i++) {
+				listImage.add(arrImage[i]);
 			}
-			
-			List<ProductDTO> listProductDTO = new ArrayList<>();
-			for (Product product : listProduct) {
-				List<String> listImage = new ArrayList<>();
-				String[] arrImage = product.getPicture().split(",");
-				for (int i = 0; i < arrImage.length; i++) {
-					listImage.add(arrImage[i]);
-				}
-				String time = new SimpleDateFormat("dd/MM/yyyy").format(product.getCreated_at());
-				ProductDTO productDTO = new ProductDTO("success", product.getId(), product.getName(), product.getCategory().getName(), product.getDescription(), product.getDetail(), listImage, product.getQuantity(), product.getPrice(), product.getCount_buy(), product.getAccount().getUsername(), time);
-				listProductDTO.add(productDTO);
-			}
-			
-			return new ResponseEntity<List<ProductDTO>>(listProductDTO,HttpStatus.OK);
+			String time = new SimpleDateFormat("dd/MM/yyyy").format(product.getCreated_at());
+			ProductDTO productDTO = new ProductDTO("success", product.getId(), product.getName(), product.getCategory().getName(), product.getDescription(), product.getDetail(), listImage, product.getQuantity(), product.getPrice(), product.getCount_buy(), product.getAccount().getUsername(), time);
+			listProductDTO.add(productDTO);
 		}
+		
+		return new ResponseEntity<List<ProductDTO>>(listProductDTO,HttpStatus.OK);
+	}
+	
+	//Get product by id category
+	@GetMapping("category/{id}")
+	public ResponseEntity<List<ProductDTO>> GetProductByIdCategory(@PathVariable("id") int id){
+		List<Product> listProduct = productService.getProductOfCategory(id);
+		
+		if(listProduct.isEmpty()) {
+			return new ResponseEntity<List<ProductDTO>>(HttpStatus.NOT_FOUND);
+		}
+		
+		List<ProductDTO> listProductDTO = new ArrayList<>();
+		for (Product product : listProduct) {
+			List<String> listImage = new ArrayList<>();
+			String[] arrImage = product.getPicture().split(",");
+			for (int i = 0; i < arrImage.length; i++) {
+				listImage.add(arrImage[i]);
+			}
+			String time = new SimpleDateFormat("dd/MM/yyyy").format(product.getCreated_at());
+			ProductDTO productDTO = new ProductDTO("success", product.getId(), product.getName(), product.getCategory().getName(), product.getDescription(), product.getDetail(), listImage, product.getQuantity(), product.getPrice(), product.getCount_buy(), product.getAccount().getUsername(), time);
+			listProductDTO.add(productDTO);
+		}
+		
+		return new ResponseEntity<List<ProductDTO>>(listProductDTO,HttpStatus.OK);
+	}
+	
+	//Get product in category by id category for shop
+	@GetMapping("shop/category/{idCat}")
+	public ResponseEntity<List<ProductDTO>> GetProductByIdCategory(Principal user, @PathVariable("idCat") int idCat){
+		//Get account current
+		Account accountLogin = accountService.getAccountByUsername(user.getName());
+		
+		List<Product> listProduct = productService.getProductOfCategoryShop(idCat, accountLogin.getId());
+		
+		if(listProduct.isEmpty()) {
+			return new ResponseEntity<List<ProductDTO>>(HttpStatus.NOT_FOUND);
+		}
+		
+		List<ProductDTO> listProductDTO = new ArrayList<>();
+		for (Product product : listProduct) {
+			List<String> listImage = new ArrayList<>();
+			String[] arrImage = product.getPicture().split(",");
+			for (int i = 0; i < arrImage.length; i++) {
+				listImage.add(arrImage[i]);
+			}
+			String time = new SimpleDateFormat("dd/MM/yyyy").format(product.getCreated_at());
+			ProductDTO productDTO = new ProductDTO("success", product.getId(), product.getName(), product.getCategory().getName(), product.getDescription(), product.getDetail(), listImage, product.getQuantity(), product.getPrice(), product.getCount_buy(), product.getAccount().getUsername(), time);
+			listProductDTO.add(productDTO);
+		}
+		
+		return new ResponseEntity<List<ProductDTO>>(listProductDTO,HttpStatus.OK);
+	}
+	
 	
 
 	//Add one product
-	@PostMapping("add/{id_account}")
-	public ResponseEntity<CreateResponse> add( @PathVariable("id_account") int id_account, @Valid @RequestBody Product objProduct, BindingResult br){
-			
+	@PostMapping("add")
+	public ResponseEntity<CreateResponse> add(Principal user ,@Valid @RequestBody Product objProduct, BindingResult br){
+		//Get account current
+		Account accountLogin = accountService.getAccountByUsername(user.getName());
+		
+		//Check role
+		boolean isShop = false;
+		Set<Role> roles = accountLogin.getRole();
+		for (Role role : roles) {
+			if (role.getName().equals("SHOP OWNER")) {
+				isShop = true;
+				break;
+			}
+		}
+		
+		//Check permission
+		boolean isPermission = false;
+		Set<Permission> permissions = accountLogin.getPermission();
+		for (Permission permission : permissions) {
+			if (permission.getName().equals("CREATE_PRODUCT")) {
+				isPermission = true;
+				break;
+			}
+		}
+		
+		if (!isShop && !isPermission) {
+			CreateResponse response = new CreateResponse("false");
+			return new ResponseEntity<CreateResponse>(response, HttpStatus.FORBIDDEN);
+		}
+
+		//Check exit category by id
 		if (!categoryService.CheckExitCategoryById(objProduct.getCategory().getId())) {
 			CreateResponse response = new CreateResponse("fail: not exist category id " + objProduct.getCategory().getId());
 			return new ResponseEntity<CreateResponse>(response,HttpStatus.NOT_ACCEPTABLE);
 		}
-		//Check exit category by id
 		Category category = categoryService.getCateogryById(objProduct.getCategory().getId());
 				
 		//Check valid
@@ -191,79 +251,52 @@ public class ProductController {
 			CreateResponse response = new CreateResponse("fail: invalid");
 			return new ResponseEntity<CreateResponse>(response,HttpStatus.NOT_ACCEPTABLE);
 		}
+	
+		//Create Product
+		Product newProduct = new Product();
+		newProduct.setName(objProduct.getName());
+		newProduct.setDescription(objProduct.getDescription());
+		newProduct.setDetail(objProduct.getDetail());
+		newProduct.setCategory(category);
+		newProduct.setQuantity(objProduct.getQuantity());
+		newProduct.setPrice(objProduct.getPrice());
+		newProduct.setAccount(accountLogin);
+		newProduct.setPicture(objProduct.getPicture());
+		newProduct.setActive(1);
 		
-		//Check exist account
-		if (!accountService.CheckExistById(id_account)) {
-			CreateResponse response = new CreateResponse("fail: not exist account id " + id_account);
-			return new ResponseEntity<CreateResponse>(response,HttpStatus.NOT_FOUND);
-		}
-		//Check role account
-		Account account = accountService.getAccountById(id_account);
+		Timestamp created_at = new Timestamp(System.currentTimeMillis());
+		newProduct.setCreated_at(created_at);
 		
-		Set<Role> role = account.getRole();
-		String nameRole = "";
-		for (Role item : role) {
-			nameRole = item.getName();
+		//Save product
+		Product product = productService.addOneProduct(newProduct);
+		
+		List<String> listPicture = new ArrayList<>();
+		String[] arrPicture = product.getPicture().split(",");
+		
+		for (int i = 0; i < arrPicture.length; i++) {
+			listPicture.add(arrPicture[i]);
 		}
-		if (!nameRole.equals("SHOP OWNER")) {
-			CreateResponse response = new CreateResponse("fail: role is not SHOP OWNER");
-			return new ResponseEntity<CreateResponse>(response,HttpStatus.NOT_ACCEPTABLE);
-		} else {
-			//Check permission CREATE_PRODUCT
-			boolean createProduct = false;
-			Set<Permission> permission = account.getPermission();
-			Permission permissionCreateProduct = permissionService.getPermissionByName("CREATE_PRODUCT");
-			for (Permission item : permission) {
-				if (item.equals(permissionCreateProduct)) {
-					createProduct = true;
-					break;
-				}
-			}
-			
-			if (createProduct == false) {
-				CreateResponse response = new CreateResponse("fail: permission is not CREATE PRODUCT");
-				return new ResponseEntity<CreateResponse>(response,HttpStatus.NOT_ACCEPTABLE);
-			} else {
-				//Create Product
-				Product newProduct = new Product();
-				newProduct.setName(objProduct.getName());
-				newProduct.setDescription(objProduct.getDescription());
-				newProduct.setDetail(objProduct.getDetail());
-				newProduct.setCategory(category);
-				newProduct.setQuantity(objProduct.getQuantity());
-				newProduct.setPrice(objProduct.getPrice());
-				newProduct.setAccount(account);
-				newProduct.setPicture(objProduct.getPicture());
-				newProduct.setActive(1);
-				
-				Timestamp created_at = new Timestamp(System.currentTimeMillis());
-				newProduct.setCreated_at(created_at);
-				
-				//Save product
-				Product product = productService.addOneProduct(newProduct);
-				
-				List<String> listPicture = new ArrayList<>();
-				String[] arrPicture = product.getPicture().split(",");
-				
-				for (int i = 0; i < arrPicture.length; i++) {
-					listPicture.add(arrPicture[i]);
-				}
-				
-				CreateResponse response = new CreateResponse("success", product.getId());
-				
-				return new ResponseEntity<CreateResponse>(response, HttpStatus.OK);
-			}
-		}
+		
+		CreateResponse response = new CreateResponse("success", product.getId());
+		
+		return new ResponseEntity<CreateResponse>(response, HttpStatus.OK);
 	}
 	
 	//Edit product
 	@PutMapping("{id}")
-	public ResponseEntity<MessageResponse> editProduct(@PathVariable("id") int id_product, @RequestBody Product objProduct){
+	public ResponseEntity<MessengerUtils> editProduct(Principal user ,@PathVariable("id") int id_product, @RequestBody Product objProduct){
+		
 		if(!productService.CheckExistProduct(id_product)) {
-			MessageResponse msg = new MessageResponse("fail: not found product id " + id_product);
-			return new ResponseEntity<MessageResponse>(msg, HttpStatus.NOT_FOUND);
+			MessengerUtils msg = new MessengerUtils("fail","Not found product id " + id_product);
+			return new ResponseEntity<MessengerUtils>(msg, HttpStatus.NOT_FOUND);
 		} else {
+			//Check product is of account
 			Product product = productService.getOneProduct(id_product);
+			
+			if (!product.getAccount().getUsername().equals(user.getName())) {
+				MessengerUtils response = new MessengerUtils("fail", "Not have permission");
+				return new ResponseEntity<MessengerUtils>(response, HttpStatus.FORBIDDEN);
+			}
 			
 			//Change data
 			if (objProduct.getName() != null) {
@@ -298,22 +331,23 @@ public class ProductController {
 			if (objProduct.getPrice() > 0) {
 				product.setPrice(objProduct.getPrice());
 			}
-			
-			if (objProduct.getCategory().getId() > 0) {
-				if (categoryService.CheckExitCategoryById(objProduct.getCategory().getId())) {
-					Category objCategory = categoryService.getCateogryById(objProduct.getCategory().getId());
-					product.setCategory(objCategory);	
-				} else {
-					MessageResponse msg = new MessageResponse("fail: not found category id " + objProduct.getCategory().getId());
-					return new ResponseEntity<MessageResponse>(msg, HttpStatus.NOT_FOUND);
+			if (objProduct.getCategory() != null) {
+				if (objProduct.getCategory().getId() > 0) {
+					if (categoryService.CheckExitCategoryById(objProduct.getCategory().getId())) {
+						Category objCategory = categoryService.getCateogryById(objProduct.getCategory().getId());
+						product.setCategory(objCategory);	
+					} else {
+						MessengerUtils response = new MessengerUtils("fail","Not found category id " + objProduct.getCategory().getId());
+						return new ResponseEntity<MessengerUtils>(response, HttpStatus.NOT_FOUND);
+					}
 				}
 			}
 			
 			//Save product
 			productService.editProduct(product);
 			
-			MessageResponse msg = new MessageResponse("success");
-			return new ResponseEntity<MessageResponse>(msg, HttpStatus.OK);
+			MessengerUtils msg = new MessengerUtils("true", "Edited");
+			return new ResponseEntity<MessengerUtils>(msg, HttpStatus.OK);
 			
 		}
 	}
@@ -321,18 +355,26 @@ public class ProductController {
 	
 	//Delete Product ~ Change active product
 	@DeleteMapping("{id}")
-	public ResponseEntity<MessageResponse> changeActiveProduct(@PathVariable("id") int id){
+	public ResponseEntity<MessengerUtils> changeActiveProduct(Principal user ,@PathVariable("id") int id){
 		if (!productService.CheckExistProduct(id)) {
-			MessageResponse msg = new MessageResponse("fail: not found product id " + id);
-			return new ResponseEntity<MessageResponse>(msg, HttpStatus.NOT_FOUND);
+			MessengerUtils msg = new MessengerUtils("fail","Not found product id " + id);
+			return new ResponseEntity<MessengerUtils>(msg, HttpStatus.NOT_FOUND);
 		}
 		Product objProduct = productService.getOneProduct(id);
+		//Check product is of account
+		Product product = productService.getOneProduct(id);
+		
+		if (!product.getAccount().getUsername().equals(user.getName())) {
+			MessengerUtils response = new MessengerUtils("fail", "Not have permission");
+			return new ResponseEntity<MessengerUtils>(response, HttpStatus.FORBIDDEN);
+		}
+		
 		//Change active
 		objProduct.setActive(0);
 		productService.changeActive(objProduct);
 		
-		MessageResponse msg = new MessageResponse("success");
-		return new ResponseEntity<MessageResponse>(msg, HttpStatus.OK);
+		MessengerUtils msg = new MessengerUtils("true", "Deleted product id " + id);
+		return new ResponseEntity<MessengerUtils>(msg, HttpStatus.OK);
 	}
 	
 }

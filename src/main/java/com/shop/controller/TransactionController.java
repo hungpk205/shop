@@ -1,5 +1,6 @@
 package com.shop.controller;
 
+import java.security.Principal;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -62,7 +63,9 @@ public class TransactionController {
 	
 	//Get all
 	@GetMapping("all")
-	public ResponseEntity<List<TransactionDTO>> getAll(){
+	public ResponseEntity<?> getAll(Principal user){
+		//Admin only se
+		
 		List<Transaction> list =  transactionService.getAll();
 		
 		List<TransactionDTO> listDTO = new ArrayList<>();
