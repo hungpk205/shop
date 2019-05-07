@@ -2,6 +2,7 @@ package com.shop.controller;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import javax.validation.Valid;
 
@@ -24,6 +25,7 @@ import com.shop.entities.Permission;
 import com.shop.entities.Role;
 import com.shop.payload.LoginRequest;
 import com.shop.response.JwtAuthenticationResponse;
+import com.shop.response.MessageResponse;
 import com.shop.security.JwtTokenProvider;
 import com.shop.service.AccountService;
 
@@ -40,47 +42,89 @@ public class LoginController {
 	@Autowired
 	private JwtTokenProvider tokenProvider;
 	
-	@PostMapping("login-1")
-	public ResponseEntity<AccountDTO> login(@RequestBody Account objAccount){
-		//System.out.println(objAccount.getUsername() + " " + objAccount.getPassword());
-		Account accountLogin  = accountService.GetAccountByUsernameAndPassword(objAccount.getUsername(), objAccount.getPassword());
+	//Login admin
+	@PostMapping("login-admin")
+	public ResponseEntity<?> authenticateAdmin(@Valid @RequestBody LoginRequest loginRequest){
 		
-		if (accountLogin != null) {
-			if (accountLogin.getStatus() == 0) {
-				AccountDTO accountDTO = new AccountDTO();
-				return new ResponseEntity<AccountDTO>(accountDTO,HttpStatus.NOT_ACCEPTABLE);
-			} else {
-				AccountDTO accountDTO = new AccountDTO(accountLogin.getId(), accountLogin.getUsername(), accountLogin.getStatus(), accountLogin.getProfile());
-				for (Role item : accountLogin.getRole()) {
-					accountDTO.setRole(item.getName());
-				}
-				List<String> permission = new ArrayList<>();
-				for (Permission item : accountLogin.getPermission()) {
-					permission.add(item.getName());
-				}
-				accountDTO.setPermission(permission);
-				
-				return new ResponseEntity<AccountDTO>(accountDTO, HttpStatus.OK);
-			}
-			
-		} else {
-			AccountDTO accountDTO = new AccountDTO();
-			return new ResponseEntity<AccountDTO>(accountDTO,HttpStatus.NOT_FOUND);
-		}
-	}
-	
-	//
-	@PostMapping("login")
-	public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest){
 		Authentication authentication = authenticationManager.authenticate(
 				new UsernamePasswordAuthenticationToken(loginRequest.getUsername(),loginRequest.getPassword())
 				);
 		
 		SecurityContextHolder.getContext().setAuthentication(authentication);
 		
-		String jwt = tokenProvider.generateToken(authentication);
-		return ResponseEntity.ok(new JwtAuthenticationResponse(jwt));
+		Account accountLogin = accountService.getAccountByUsername(loginRequest.getUsername());
+		Set<Role> roles = accountLogin.getRole();
+		boolean isAdmin = false;
+		for (Role role : roles) {
+			if (role.getName().equals("ADMIN")) {
+				isAdmin = true;
+			}
+		}
+		if (authentication != null && isAdmin) {
+			String jwt = tokenProvider.generateToken(authentication);
+			return ResponseEntity.ok(new JwtAuthenticationResponse(jwt));
+		}
+		
+		
+		return ResponseEntity.ok(new MessageResponse("fail"));
 				
 	}
+	
+	//Login admin
+		@PostMapping("login-shop")
+		public ResponseEntity<?> authenticateShop(@Valid @RequestBody LoginRequest loginRequest){
+			
+			Authentication authentication = authenticationManager.authenticate(
+					new UsernamePasswordAuthenticationToken(loginRequest.getUsername(),loginRequest.getPassword())
+					);
+			
+			SecurityContextHolder.getContext().setAuthentication(authentication);
+			
+			Account accountLogin = accountService.getAccountByUsername(loginRequest.getUsername());
+			Set<Role> roles = accountLogin.getRole();
+			boolean isAdmin = false;
+			for (Role role : roles) {
+				if (role.getName().equals("SHOP OWNER")) {
+					isAdmin = true;
+				}
+			}
+			if (authentication != null && isAdmin) {
+				String jwt = tokenProvider.generateToken(authentication);
+				return ResponseEntity.ok(new JwtAuthenticationResponse(jwt));
+			}
+			
+			
+			return ResponseEntity.ok(new MessageResponse("fail"));
+					
+		}
+		
+		
+		//Login admin
+		@PostMapping("login-customer")
+		public ResponseEntity<?> authenticateCustomer(@Valid @RequestBody LoginRequest loginRequest){
+			
+			Authentication authentication = authenticationManager.authenticate(
+					new UsernamePasswordAuthenticationToken(loginRequest.getUsername(),loginRequest.getPassword())
+					);
+			
+			SecurityContextHolder.getContext().setAuthentication(authentication);
+			
+			Account accountLogin = accountService.getAccountByUsername(loginRequest.getUsername());
+			Set<Role> roles = accountLogin.getRole();
+			boolean isAdmin = false;
+			for (Role role : roles) {
+				if (role.getName().equals("CUSTOMER")) {
+					isAdmin = true;
+				}
+			}
+			if (authentication != null && isAdmin) {
+				String jwt = tokenProvider.generateToken(authentication);
+				return ResponseEntity.ok(new JwtAuthenticationResponse(jwt));
+			}
+			
+			
+			return ResponseEntity.ok(new MessageResponse("fail"));
+					
+		}
 	
 }
