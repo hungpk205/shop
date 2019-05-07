@@ -5,9 +5,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -24,6 +27,7 @@ import com.shop.entities.Permission;
 import com.shop.entities.Product;
 import com.shop.entities.Profile;
 import com.shop.entities.Role;
+import com.shop.payload.RegisterRequest;
 import com.shop.response.MessageResponse;
 import com.shop.response.RegisterResponse;
 import com.shop.service.AccountService;
@@ -44,7 +48,8 @@ public class AccountController {
 	private PermissionService permissionService;
 	@Autowired
 	private ProductService productService;
-	
+	@Autowired
+	private BCryptPasswordEncoder encoder;
 	
 	
 	//Add
@@ -128,9 +133,12 @@ public class AccountController {
 	
 	//Register shop
 	@PostMapping("register/shop")
-	public ResponseEntity<RegisterResponse> registerShop(@RequestParam("username") String username, @RequestParam("password") String password){
-		if (accountService.getAccountByUsername(username) == null) {
-			Account account = new Account(null, username, password, 1);
+	public ResponseEntity<RegisterResponse> registerShop(@Valid @RequestBody RegisterRequest registerRequest){
+		if (accountService.getAccountByUsername(registerRequest.getUsername()) == null) {
+			//Encode password
+			String password = encoder.encode(registerRequest.getPassword());
+			
+			Account account = new Account(null, registerRequest.getUsername(), password, 1);
 			
 			Role role = roleService.getRoleByName("SHOP OWNER");
 			account.getRole().add(role);
