@@ -1,12 +1,17 @@
 package com.shop.controller;
 
+import java.nio.file.attribute.UserPrincipal;
+import java.security.Principal;
 import java.util.List;
+import java.util.Set;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,8 +23,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.shop.dto.CategoryDTO;
+import com.shop.entities.Account;
 import com.shop.entities.Category;
 import com.shop.entities.Product;
+import com.shop.entities.Role;
+import com.shop.security.CurrentUser;
+import com.shop.security.JwtTokenProvider;
+import com.shop.service.AccountService;
 import com.shop.service.CategoryService;
 import com.shop.service.ProductService;
 import com.shop.utils.MessengerUtils;
@@ -33,6 +43,12 @@ public class CategoryController {
 	
 	@Autowired
 	private ProductService prodcutService;
+	
+	@Autowired 
+	private JwtTokenProvider tokenProvider;
+	
+	@Autowired
+	private AccountService accountSerivce;
 	
 	
 	//Get all categories
@@ -60,26 +76,21 @@ public class CategoryController {
 	
 	//Add new category
 	@PostMapping("add")
-	public ResponseEntity<CategoryDTO> add(@Valid @RequestBody Category objCat, BindingResult br){
+	public ResponseEntity<CategoryDTO> add(Principal user, HttpServletRequest request ,@Valid @RequestBody Category objCat, BindingResult br){
 		//Check empty value
 		if (br.hasErrors()) {
 			CategoryDTO catDTO = new CategoryDTO("false", null, null);
 			return new ResponseEntity<CategoryDTO>(catDTO, HttpStatus.NOT_ACCEPTABLE);
 		}
 		
-		//Check name
-		//if ("".equals(objCat.getName()) || (categoryService.getCategoryByName(objCat.getName()) != null )) {
-		//	CategoryDTO catDTO = new CategoryDTO();
-		//	catDTO.setSuccess("false");
-		//	return new ResponseEntity<CategoryDTO>(catDTO, HttpStatus.NOT_ACCEPTABLE);
-		//} else {
-			//Add this category
+		//System.out.println(userp.getName());
+		System.out.println(user.getName());
+		
+		
+		categoryService.addNewCategory(objCat);
+		CategoryDTO catDTO = new CategoryDTO("true", objCat.getName(), objCat.getImage());
+		return new ResponseEntity<CategoryDTO>(catDTO,HttpStatus.OK);
 			
-			categoryService.addNewCategory(objCat);
-			CategoryDTO catDTO = new CategoryDTO("true", objCat.getName(), objCat.getImage());
-			return new ResponseEntity<CategoryDTO>(catDTO,HttpStatus.OK);
-			
-		//}
 	}
 	
 	//Edit category

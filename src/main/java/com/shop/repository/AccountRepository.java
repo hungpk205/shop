@@ -1,5 +1,7 @@
 package com.shop.repository;
 
+import java.util.Optional;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -9,6 +11,9 @@ import com.shop.entities.Account;
 
 @Repository
 public interface AccountRepository extends JpaRepository<Account, Integer>{
+	Optional<Account> findByUsername(String username);
+	//boolean ExistByUsername(String username);
+	
 	
 	//Get account by username
 	@Query(value = "SELECT * FROM accounts AS ac WHERE ac.username =:username", nativeQuery = true)
