@@ -44,9 +44,6 @@ public class CategoryController {
 	@Autowired
 	private ProductService prodcutService;
 	
-	@Autowired 
-	private JwtTokenProvider tokenProvider;
-	
 	@Autowired
 	private AccountService accountSerivce;
 	

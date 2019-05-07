@@ -1,5 +1,6 @@
 package com.shop.controller;
 
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -11,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -49,7 +51,8 @@ public class AccountController {
 	@Autowired
 	private ProductService productService;
 	@Autowired
-	private BCryptPasswordEncoder encoder;
+	private PasswordEncoder encoderPassword;
+	
 	
 	
 	//Add
@@ -136,7 +139,7 @@ public class AccountController {
 	public ResponseEntity<RegisterResponse> registerShop(@Valid @RequestBody RegisterRequest registerRequest){
 		if (accountService.getAccountByUsername(registerRequest.getUsername()) == null) {
 			//Encode password
-			String password = encoder.encode(registerRequest.getPassword());
+			String password = encoderPassword.encode(registerRequest.getPassword());
 			
 			Account account = new Account(null, registerRequest.getUsername(), password, 1);
 			
@@ -223,14 +226,37 @@ public class AccountController {
 	
 	//Edit Account Profile
 	@PutMapping("{id}")
-	public ResponseEntity<MessageResponse> editAccount(@PathVariable("id") int id,
+	public ResponseEntity<MessengerUtils> editAccount(Principal user, @PathVariable("id") int id,
 			@RequestBody Profile objProfile
 			){
+		//Check role
+		Account accountCurrent = accountService.getAccountByUsername(user.getName());
+		Set<Role> roles = accountCurrent.getRole();
+		boolean havePermission = false;
+		
+		//Admin can edit everyone
+		for (Role role : roles) {
+			if (role.getName().equals("ADMIN")) {
+				havePermission = true;
+				break;
+			}
+		}
+		
+		//User current can edit
+		if (accountCurrent.getId().equals(id)) {
+			havePermission = true;
+		}
+		
+		if (!havePermission) {
+			MessengerUtils msg = new MessengerUtils("fail", "Not have role");
+			return new ResponseEntity<MessengerUtils>(msg, HttpStatus.BAD_REQUEST);
+		}
+		
 		//Get account by id
 		Account account = accountService.getAccountById(id);
 		if (account == null) {
-			MessageResponse response = new MessageResponse("fail: not found this account");
-			return new ResponseEntity<MessageResponse>(response, HttpStatus.NOT_FOUND);
+			MessengerUtils msg = new MessengerUtils("fail", "Not found account id " + id);
+			return new ResponseEntity<MessengerUtils>(msg, HttpStatus.NOT_FOUND);
 		}
 		
 		Profile profile = account.getProfile();
@@ -253,14 +279,29 @@ public class AccountController {
 		account.setProfile(profile);
 		accountService.editAccount(account);
 		
-		MessageResponse msg = new MessageResponse("success");
-		return new ResponseEntity<MessageResponse>(msg, HttpStatus.OK);
+		MessengerUtils msg = new MessengerUtils("success", "Edited account id " + id);
+		return new ResponseEntity<MessengerUtils>(msg, HttpStatus.OK);
 		
 	}
 	
 	//Delete account
 	@DeleteMapping("{id}")
-	public ResponseEntity<MessengerUtils> delete(@PathVariable("id") int id){
+	public ResponseEntity<MessengerUtils> delete(Principal user ,@PathVariable("id") int id){
+		//Check role user
+		Account accountCurrent = accountService.getAccountByUsername(user.getName());
+		Set<Role> roles = accountCurrent.getRole();
+		boolean isAdmin = false;
+		for (Role role : roles) {
+			if (role.getName().equals("ADMIN")) {
+				isAdmin = true;
+				break;
+			}
+		}
+		if (!isAdmin) {
+			MessengerUtils msg = new MessengerUtils("false", "Not have role");
+			return new ResponseEntity<MessengerUtils>(msg, HttpStatus.BAD_REQUEST);
+		}
+		
 		//Get account by id
 		Account objAccount = accountService.getAccountById(id);
 		
@@ -278,7 +319,6 @@ public class AccountController {
 		
 		//Delete account
 		accountService.deleteAccount(objAccount);
-		
 		
 		MessengerUtils msg = new MessengerUtils("true", "Deleted account id " + id);
 		return new ResponseEntity<MessengerUtils>(msg, HttpStatus.OK);
