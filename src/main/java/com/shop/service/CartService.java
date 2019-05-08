@@ -17,6 +17,9 @@ public interface CartService {
 	//Update product in cart
 	Cart updateCart(Cart cart);
 	
+	//Delete product in cart
+	void DeleteProductInCart(int id_account, int id_product);
+	
 	//Delete Cart of account
 	void DeleteCartOfAccount(int id_account);
 	

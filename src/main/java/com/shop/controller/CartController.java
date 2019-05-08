@@ -144,6 +144,15 @@ public class CartController {
 		
 	}
 	
+	//Delete a product in cart
+	@DeleteMapping("delete")
+	public ResponseEntity<MessengerUtils> deleteItemCart(Principal user, @RequestBody CartRequest cartRequest){
+		Account accountLogin = accountService.getAccountByUsername(user.getName());
+		
+		cartService.DeleteProductInCart(accountLogin.getId(), cartRequest.getId_product());
+		MessengerUtils response = new MessengerUtils(true, "Deleted product id " + cartRequest.getId_product() + "in cart");
+		return new ResponseEntity<MessengerUtils>(response, HttpStatus.OK);
+	}
 	
 	//Delete cart of account
 	@DeleteMapping("clear")

@@ -39,4 +39,9 @@ public class CartServiceImpl implements CartService {
 		return cartRepo.getCartProductAccount(id_account, id_product);
 	}
 
+	@Override
+	public void DeleteProductInCart(int in_account, int id_product) {
+		cartRepo.DeleteProductInCart(in_account, id_product);
+	}
+
 }

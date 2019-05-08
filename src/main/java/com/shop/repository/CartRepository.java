@@ -27,4 +27,10 @@ public interface CartRepository extends JpaRepository<Cart, Integer> {
 	//Get cart product account
 	@Query(value = "SELECT * FROM carts WHERE id_account =:id_account AND id_product =:id_product", nativeQuery = true)
 	Cart getCartProductAccount(@Param("id_account") int id_account, @Param("id_product") int id_product);
+	
+	//Delete product in cart
+	@Modifying
+	@Transactional
+	@Query(value = "DELETE FROM carts WHERE id_account =:id_account AND id_product =:id_product", nativeQuery = true)
+	void DeleteProductInCart(@Param("id_account") int id_account, @Param("id_product") int id_product);
 }
