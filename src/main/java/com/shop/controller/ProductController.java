@@ -28,6 +28,7 @@ import com.shop.entities.Category;
 import com.shop.entities.Permission;
 import com.shop.entities.Product;
 import com.shop.entities.Role;
+import com.shop.request.ProductRequest;
 import com.shop.response.CreateResponse;
 import com.shop.service.AccountService;
 import com.shop.service.CategoryService;
@@ -205,7 +206,7 @@ public class ProductController {
 
 	//Add one product
 	@PostMapping("add")
-	public ResponseEntity<CreateResponse> add(Principal user ,@Valid @RequestBody Product objProduct, BindingResult br){
+	public ResponseEntity<CreateResponse> add(Principal user ,@Valid @RequestBody ProductRequest objProduct){
 		//Get account current
 		Account accountLogin = accountService.getAccountByUsername(user.getName());
 		
@@ -235,18 +236,12 @@ public class ProductController {
 		}
 
 		//Check exit category by id
-		if (!categoryService.CheckExitCategoryById(objProduct.getCategory().getId())) {
-			CreateResponse response = new CreateResponse("fail: not exist category id " + objProduct.getCategory().getId());
+		if (!categoryService.CheckExitCategoryById(objProduct.getId_category())) {
+			CreateResponse response = new CreateResponse("fail: not exist category id " + objProduct.getId_category());
 			return new ResponseEntity<CreateResponse>(response,HttpStatus.NOT_ACCEPTABLE);
 		}
-		Category category = categoryService.getCateogryById(objProduct.getCategory().getId());
+		Category category = categoryService.getCateogryById(objProduct.getId_category());
 				
-		//Check valid
-		if (br.hasErrors()) {
-			CreateResponse response = new CreateResponse("fail: invalid");
-			return new ResponseEntity<CreateResponse>(response,HttpStatus.NOT_ACCEPTABLE);
-		}
-	
 		//Create Product
 		Product newProduct = new Product();
 		newProduct.setName(objProduct.getName());
