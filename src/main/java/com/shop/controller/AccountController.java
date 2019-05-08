@@ -198,7 +198,7 @@ public class AccountController {
 		
 		List<AccountDTO> listAccountDTO = new ArrayList<>();
 		for (Account account : listAccount) {
-			AccountDTO objAccountDTO = new AccountDTO(account.getUsername(), account.getStatus(), account.getProfile());
+			AccountDTO objAccountDTO = new AccountDTO(account.getId(), account.getUsername(), account.getStatus(), account.getProfile());
 			for(Role role :account.getRole()) {
 				objAccountDTO.setRole(role.getName());
 			}
@@ -245,7 +245,7 @@ public class AccountController {
 		
 		Account account = accountService.getAccountById(id);
 		if (account != null) {
-			AccountDTO accountDTO = new AccountDTO(account.getUsername(), account.getStatus(), account.getProfile());
+			AccountDTO accountDTO = new AccountDTO(account.getId(),account.getUsername(), account.getStatus(), account.getProfile());
 			for (Role role : account.getRole()) {
 				accountDTO.setRole(role.getName());
 			}
@@ -267,7 +267,7 @@ public class AccountController {
 	@GetMapping("current")
 	public ResponseEntity<AccountDTO> getCurrentAccount(Principal user){
 		Account accountLogin = accountService.getAccountByUsername(user.getName());
-		AccountDTO accountDTO = new AccountDTO(accountLogin.getUsername(), accountLogin.getStatus(), accountLogin.getProfile());
+		AccountDTO accountDTO = new AccountDTO(accountLogin.getId(),accountLogin.getUsername(), accountLogin.getStatus(), accountLogin.getProfile());
 		
 		Set<Role> roles = accountLogin.getRole();
 		for (Role role : roles) {
@@ -286,7 +286,7 @@ public class AccountController {
 	}
 	
 	//Edit Account Profile
-	@PutMapping("{id}")
+	@PutMapping("edit")
 	public ResponseEntity<MessengerUtils> editAccount(Principal user, @PathVariable("id") int id,
 			@RequestBody Profile objProfile
 			){

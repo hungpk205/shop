@@ -5,19 +5,19 @@ import java.util.List;
 import com.shop.entities.Profile;
 
 public class AccountDTO {
-	//private int id;
+	private int id;
 	private String username;
 	private int status;
 	private Profile profile;
 	private String role;
 	private List<String> permission;
 	
-	/*public int getId() {
+	public int getId() {
 		return id;
 	}
 	public void setId(int id) {
 		this.id = id;
-	}*/
+	}
 	public String getUsername() {
 		return username;
 	}
@@ -49,9 +49,9 @@ public class AccountDTO {
 	public void setPermission(List<String> permission) {
 		this.permission = permission;
 	}
-	public AccountDTO(String username, int status, Profile profile) {
+	public AccountDTO(int id, String username, int status, Profile profile) {
 		super();
-		//this.id = id;
+		this.id = id;
 		this.username = username;
 		this.status = status;
 		this.profile = profile;
