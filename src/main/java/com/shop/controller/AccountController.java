@@ -28,7 +28,7 @@ import com.shop.entities.Permission;
 import com.shop.entities.Product;
 import com.shop.entities.Profile;
 import com.shop.entities.Role;
-import com.shop.payload.RegisterRequest;
+import com.shop.request.RegisterRequest;
 import com.shop.response.RegisterResponse;
 import com.shop.service.AccountService;
 import com.shop.service.PermissionService;
@@ -190,7 +190,7 @@ public class AccountController {
 			}
 		}
 		if (!isAdmin) {
-			MessengerUtils msg = new MessengerUtils("false", "Not have permission");
+			MessengerUtils msg = new MessengerUtils(false, "Not have permission");
 			return new ResponseEntity<MessengerUtils>(msg, HttpStatus.FORBIDDEN);
 		}
 		
@@ -239,7 +239,7 @@ public class AccountController {
 			isAccount = true;
 		}
 		if (!isAdmin && !isAccount) {
-			MessengerUtils msg = new MessengerUtils("false", "Not have permission");
+			MessengerUtils msg = new MessengerUtils(false, "Not have permission");
 			return new ResponseEntity<MessengerUtils>(msg, HttpStatus.FORBIDDEN);
 		}
 		
@@ -287,14 +287,14 @@ public class AccountController {
 		}
 		
 		if (!havePermission) {
-			MessengerUtils msg = new MessengerUtils("fail", "Not have role");
+			MessengerUtils msg = new MessengerUtils(false, "Not have role");
 			return new ResponseEntity<MessengerUtils>(msg, HttpStatus.BAD_REQUEST);
 		}
 		
 		//Get account by id
 		Account account = accountService.getAccountById(id);
 		if (account == null) {
-			MessengerUtils msg = new MessengerUtils("fail", "Not found account id " + id);
+			MessengerUtils msg = new MessengerUtils(false, "Not found account id " + id);
 			return new ResponseEntity<MessengerUtils>(msg, HttpStatus.NOT_FOUND);
 		}
 		
@@ -319,7 +319,7 @@ public class AccountController {
 		account.setProfile(profile);
 		accountService.editAccount(account);
 		
-		MessengerUtils msg = new MessengerUtils("success", "Edited account id " + id);
+		MessengerUtils msg = new MessengerUtils(true, "Edited account id " + id);
 		return new ResponseEntity<MessengerUtils>(msg, HttpStatus.OK);
 		
 	}
@@ -338,7 +338,7 @@ public class AccountController {
 			}
 		}
 		if (!isAdmin) {
-			MessengerUtils msg = new MessengerUtils("false", "Not have role");
+			MessengerUtils msg = new MessengerUtils(false, "Not have role");
 			return new ResponseEntity<MessengerUtils>(msg, HttpStatus.BAD_REQUEST);
 		}
 		
@@ -347,7 +347,7 @@ public class AccountController {
 		
 		//Check exist account
 		if (objAccount == null) {
-			MessengerUtils msg = new MessengerUtils("false", "Not exist account id " + id);
+			MessengerUtils msg = new MessengerUtils(false, "Not exist account id " + id);
 			return new ResponseEntity<MessengerUtils>(msg, HttpStatus.NOT_ACCEPTABLE);
 		}	
 		//Delete product created by account
@@ -360,7 +360,7 @@ public class AccountController {
 		//Delete account
 		accountService.deleteAccount(objAccount);
 		
-		MessengerUtils msg = new MessengerUtils("true", "Deleted account id " + id);
+		MessengerUtils msg = new MessengerUtils(true, "Deleted account id " + id);
 		return new ResponseEntity<MessengerUtils>(msg, HttpStatus.OK);
 		
 	}

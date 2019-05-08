@@ -2,7 +2,6 @@ package com.shop.repository;
 
 import java.util.List;
 
-
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -46,5 +45,6 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
 	@Query(value = "SELECT * FROM products AS p INNER JOIN accounts AS ac ON p.created_by = ac.id"
 			+ " INNER JOIN categories AS c ON p.id_category = c.id WHERE p.active = 1 AND ac.id =:idShop AND c.id = :idCat", nativeQuery = true)
 	List<Product> getProductInCategoryOfShop(@Param("idCat") int idCat, @Param("idShop") int idShop);
+	
 	
 }

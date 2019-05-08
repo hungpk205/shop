@@ -9,6 +9,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -63,6 +64,9 @@ public class Product {
 	@ManyToOne
 	@JoinColumn(name = "id_category")
 	private Category category;
+	
+	@OneToOne(mappedBy = "product")
+	private Cart cart;
 
 	public Integer getId() {
 		return id;

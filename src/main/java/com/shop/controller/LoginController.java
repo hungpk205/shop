@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.shop.entities.Account;
 import com.shop.entities.Role;
-import com.shop.payload.LoginRequest;
+import com.shop.request.LoginRequest;
 import com.shop.response.JwtAuthenticationResponse;
 import com.shop.response.MessageResponse;
 import com.shop.security.JwtTokenProvider;

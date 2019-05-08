@@ -114,13 +114,13 @@ public class CategoryController {
 			}
 		}
 		if (!isAdmin) {
-			MessengerUtils msg = new MessengerUtils("fail", "Not have role");
+			MessengerUtils msg = new MessengerUtils(false, "Not have role");
 			return new ResponseEntity<MessengerUtils>(msg,HttpStatus.FORBIDDEN);
 		}
 		
 		
 		if (cat == null) {
-			MessengerUtils msg = new MessengerUtils("fail", "Not found category id " + idCat);
+			MessengerUtils msg = new MessengerUtils(false, "Not found category id " + idCat);
 			return new ResponseEntity<MessengerUtils>(msg, HttpStatus.NOT_FOUND);
 		} else {
 			if (!objCat.getName().equals("")) {
@@ -131,7 +131,7 @@ public class CategoryController {
 			}
 			categoryService.editCategory(cat);
 			
-			MessengerUtils msg = new MessengerUtils("true", "Edited category id " + idCat);
+			MessengerUtils msg = new MessengerUtils(true, "Edited category id " + idCat);
 			return new ResponseEntity<MessengerUtils>(msg,HttpStatus.OK);
 		}
 	}
@@ -151,21 +151,21 @@ public class CategoryController {
 			}
 		}
 		if (!isAdmin) {
-			MessengerUtils msg = new MessengerUtils("false", "Not have role");
+			MessengerUtils msg = new MessengerUtils(false, "Not have role");
 			return new ResponseEntity<MessengerUtils>(msg, HttpStatus.FORBIDDEN);
 		}
 		
 		//Check exist category
 		if (categoryService.getCateogryById(idCat) == null) {
-			MessengerUtils msg = new MessengerUtils("false", "Not found category id " + idCat);
+			MessengerUtils msg = new MessengerUtils(false, "Not found category id " + idCat);
 			return new ResponseEntity<MessengerUtils>(msg, HttpStatus.NOT_FOUND);
 		} else {
 			if (prodcutService.getListProductByIdCategory(idCat).isEmpty()) {
 				categoryService.deleteCategory(idCat);
-				MessengerUtils msg = new MessengerUtils("true", "Deleted category id " + idCat);
+				MessengerUtils msg = new MessengerUtils(true, "Deleted category id " + idCat);
 				return new ResponseEntity<MessengerUtils>(msg, HttpStatus.OK);
 			} else {
-				MessengerUtils msg = new MessengerUtils("false", "Can not delete category id " + idCat);
+				MessengerUtils msg = new MessengerUtils(false, "Can not delete category id " + idCat);
 				return new ResponseEntity<MessengerUtils>(msg, HttpStatus.NOT_ACCEPTABLE);
 			}
 		}

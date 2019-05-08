@@ -1,7 +1,7 @@
 package com.shop.utils;
 
 public class MessengerUtils {
-	private String success;
+	private boolean success;
 	private String message;
 	
 	public String getMessage() {
@@ -12,21 +12,21 @@ public class MessengerUtils {
 		this.message = message;
 	}
 
-	public String getSuccess() {
+	public boolean getSuccess() {
 		return success;
 	}
 
-	public void setSuccess(String success) {
+	public void setSuccess(boolean success) {
 		this.success = success;
 	}
 
-	public MessengerUtils(String success) {
+	public MessengerUtils(boolean success) {
 		super();
 		this.success = success;
 	}
 	
 
-	public MessengerUtils(String success, String message) {
+	public MessengerUtils(boolean success, String message) {
 		super();
 		this.success = success;
 		this.message = message;

@@ -1,12 +1,13 @@
-package com.shop.payload;
+package com.shop.request;
 
 import javax.validation.constraints.NotBlank;
 
-public class LoginRequest {
+public class RegisterRequest {
 	@NotBlank
 	private String username;
 	@NotBlank
 	private String password;
+	
 	public String getUsername() {
 		return username;
 	}
@@ -18,6 +19,16 @@ public class LoginRequest {
 	}
 	public void setPassword(String password) {
 		this.password = password;
+	}
+	
+	public RegisterRequest(@NotBlank String username, @NotBlank String password) {
+		super();
+		this.username = username;
+		this.password = password;
+	}
+	
+	public RegisterRequest() {
+		super();
 	}
 	
 	

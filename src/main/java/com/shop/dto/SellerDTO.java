@@ -1,17 +1,17 @@
 package com.shop.dto;
 
 public class SellerDTO {
-	private int id;
+	//private int id;
 	private String name;
 	private String phone;
 	private String email;
 	private String address;
-	public int getId() {
+	/*public int getId() {
 		return id;
 	}
 	public void setId(int id) {
 		this.id = id;
-	}
+	}*/
 	public String getName() {
 		return name;
 	}
@@ -36,9 +36,9 @@ public class SellerDTO {
 	public void setAddress(String address) {
 		this.address = address;
 	}
-	public SellerDTO(int id, String name, String phone, String email, String address) {
+	public SellerDTO(String name, String phone, String email, String address) {
 		super();
-		this.id = id;
+		//this.id = id;
 		this.name = name;
 		this.phone = phone;
 		this.email = email;

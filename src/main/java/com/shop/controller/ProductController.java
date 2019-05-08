@@ -31,7 +31,6 @@ import com.shop.entities.Role;
 import com.shop.response.CreateResponse;
 import com.shop.service.AccountService;
 import com.shop.service.CategoryService;
-import com.shop.service.PermissionService;
 import com.shop.service.ProductService;
 import com.shop.utils.MessengerUtils;
 
@@ -48,10 +47,6 @@ public class ProductController {
 	@Autowired
 	private AccountService accountService;
 	
-	@Autowired
-	private PermissionService permissionService;
-	
-
 	@GetMapping("all")
 	public ResponseEntity<List<ProductDTO>> getAll(){
 		List<Product> listProduct = productService.getAll();
@@ -287,14 +282,14 @@ public class ProductController {
 	public ResponseEntity<MessengerUtils> editProduct(Principal user ,@PathVariable("id") int id_product, @RequestBody Product objProduct){
 		
 		if(!productService.CheckExistProduct(id_product)) {
-			MessengerUtils msg = new MessengerUtils("fail","Not found product id " + id_product);
+			MessengerUtils msg = new MessengerUtils(false,"Not found product id " + id_product);
 			return new ResponseEntity<MessengerUtils>(msg, HttpStatus.NOT_FOUND);
 		} else {
 			//Check product is of account
 			Product product = productService.getOneProduct(id_product);
 			
 			if (!product.getAccount().getUsername().equals(user.getName())) {
-				MessengerUtils response = new MessengerUtils("fail", "Not have permission");
+				MessengerUtils response = new MessengerUtils(false, "Not have permission");
 				return new ResponseEntity<MessengerUtils>(response, HttpStatus.FORBIDDEN);
 			}
 			
@@ -337,7 +332,7 @@ public class ProductController {
 						Category objCategory = categoryService.getCateogryById(objProduct.getCategory().getId());
 						product.setCategory(objCategory);	
 					} else {
-						MessengerUtils response = new MessengerUtils("fail","Not found category id " + objProduct.getCategory().getId());
+						MessengerUtils response = new MessengerUtils(false,"Not found category id " + objProduct.getCategory().getId());
 						return new ResponseEntity<MessengerUtils>(response, HttpStatus.NOT_FOUND);
 					}
 				}
@@ -346,7 +341,7 @@ public class ProductController {
 			//Save product
 			productService.editProduct(product);
 			
-			MessengerUtils msg = new MessengerUtils("true", "Edited");
+			MessengerUtils msg = new MessengerUtils(true, "Edited");
 			return new ResponseEntity<MessengerUtils>(msg, HttpStatus.OK);
 			
 		}
@@ -357,7 +352,7 @@ public class ProductController {
 	@DeleteMapping("{id}")
 	public ResponseEntity<MessengerUtils> changeActiveProduct(Principal user ,@PathVariable("id") int id){
 		if (!productService.CheckExistProduct(id)) {
-			MessengerUtils msg = new MessengerUtils("fail","Not found product id " + id);
+			MessengerUtils msg = new MessengerUtils(false,"Not found product id " + id);
 			return new ResponseEntity<MessengerUtils>(msg, HttpStatus.NOT_FOUND);
 		}
 		Product objProduct = productService.getOneProduct(id);
@@ -365,7 +360,7 @@ public class ProductController {
 		Product product = productService.getOneProduct(id);
 		
 		if (!product.getAccount().getUsername().equals(user.getName())) {
-			MessengerUtils response = new MessengerUtils("fail", "Not have permission");
+			MessengerUtils response = new MessengerUtils(false, "Not have permission");
 			return new ResponseEntity<MessengerUtils>(response, HttpStatus.FORBIDDEN);
 		}
 		
@@ -373,7 +368,7 @@ public class ProductController {
 		objProduct.setActive(0);
 		productService.changeActive(objProduct);
 		
-		MessengerUtils msg = new MessengerUtils("true", "Deleted product id " + id);
+		MessengerUtils msg = new MessengerUtils(true, "Deleted product id " + id);
 		return new ResponseEntity<MessengerUtils>(msg, HttpStatus.OK);
 	}
 	

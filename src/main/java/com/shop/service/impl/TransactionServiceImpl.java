@@ -30,4 +30,9 @@ public class TransactionServiceImpl implements TransactionService {
 		return transactionRepo.save(objTransaction);
 	}
 
+	@Override
+	public Transaction getTransactionById(int id_account, int id_transaction) {
+		return transactionRepo.getTransactionByIdTransactionOfAccount(id_account, id_transaction);
+	}
+
 }

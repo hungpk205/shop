@@ -15,4 +15,7 @@ public interface TransactionRepository extends JpaRepository<Transaction, Intege
 	@Query(value = "SELECT * FROM transactions AS t INNER JOIN accounts AS a ON t.id_account = a.id WHERE a.id =:id_account", nativeQuery = true)
 	List<Transaction> getTransactionOfCustomer(@Param("id_account") int id_account);
 	
+	//Get transaction by id transaction of account
+	@Query(value = "SELECT * FROM transactions AS t INNER JOIN accounts AS a ON t.id_account = a.id WHERE a.id =:id_account AND t.id =:id_transaction", nativeQuery = true)
+	Transaction getTransactionByIdTransactionOfAccount(@Param("id_account") int id_account, @Param("id_transaction") int id_transaction);
 }
