@@ -39,7 +39,7 @@ public class CartController {
 	private ProductService productService;
 	
 	//Get cart of account
-	@GetMapping("shop")
+	@GetMapping("customer")
 	public ResponseEntity<?> getCartOfAccount(Principal user){
 		//Get account current
 		Account accountLogin = accountService.getAccountByUsername(user.getName());
