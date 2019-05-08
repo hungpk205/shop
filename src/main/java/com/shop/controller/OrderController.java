@@ -1,8 +1,10 @@
 package com.shop.controller;
 
+import java.security.Principal;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -14,7 +16,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.shop.dto.OrderDTO;
 import com.shop.dto.ProductDTO;
+import com.shop.entities.Account;
 import com.shop.entities.Order;
+import com.shop.entities.Role;
+import com.shop.response.MessageResponse;
+import com.shop.service.AccountService;
 import com.shop.service.OrderService;
 
 @RestController
@@ -22,6 +28,8 @@ import com.shop.service.OrderService;
 public class OrderController {
 	@Autowired
 	private OrderService orderService;
+	@Autowired
+	private AccountService accountService;
 	
 	
 	@GetMapping("alll")
@@ -32,7 +40,21 @@ public class OrderController {
 	
 	
 	@GetMapping("all")
-	public ResponseEntity<List<OrderDTO>> getAll(){
+	public ResponseEntity<?> getAll(Principal user){
+		Account accountLogin = accountService.getAccountByUsername(user.getName());
+		boolean isAdmin = false;
+		Set<Role> roles = accountLogin.getRole();
+		for (Role role : roles) {
+			if (role.getName().equals("ADMIN")) {
+				isAdmin = true;
+				break;
+			}
+		}
+		if (!isAdmin) {
+			MessageResponse response = new MessageResponse("Not have role");
+			return new ResponseEntity<MessageResponse>(response, HttpStatus.FORBIDDEN);
+		}
+		
 		List<Order> listOrder = orderService.getAllOrder();
 		
 		List<OrderDTO> listOrderDTO = new ArrayList<>();
@@ -64,15 +86,30 @@ public class OrderController {
 		
 			return new ResponseEntity<List<OrderDTO>>(listOrderDTO, HttpStatus.OK);
 		}
-		
-		return new ResponseEntity<List<OrderDTO>>(HttpStatus.NOT_FOUND);
+		MessageResponse response = new MessageResponse("Not have order");
+		return new ResponseEntity<MessageResponse>(response, HttpStatus.NOT_FOUND);
 		
 		
 	}
 	
-	@GetMapping("{id_shop}")
-	public ResponseEntity<List<OrderDTO>> getOrderOfShop(@PathVariable("id_shop") int id_shop){
-		List<Order> listOrder = orderService.getOrderOfShop(id_shop);
+	@GetMapping("shop")
+	public ResponseEntity<?> getOrderOfShop(Principal user){
+		Account accountLogin = accountService.getAccountByUsername(user.getName());
+		boolean isShop = false;
+		Set<Role> roles = accountLogin.getRole();
+		for (Role role : roles) {
+			if (role.getName().equals("SHOP OWNER")) {
+				isShop = true;
+				break;
+			}
+		}
+		if (!isShop) {
+			MessageResponse response = new MessageResponse("Not have role");
+			return new ResponseEntity<MessageResponse>(response, HttpStatus.FORBIDDEN);
+		}
+		
+		
+		List<Order> listOrder = orderService.getOrderOfShop(accountLogin.getId());
 		
 		List<OrderDTO> listOrderDTO = new ArrayList<>();
 		if (listOrder.size() > 0) {
@@ -103,8 +140,8 @@ public class OrderController {
 		
 			return new ResponseEntity<List<OrderDTO>>(listOrderDTO, HttpStatus.OK);
 		}
-		
-		return new ResponseEntity<List<OrderDTO>>(HttpStatus.NOT_FOUND);
+		MessageResponse response = new MessageResponse("Not found order");
+		return new ResponseEntity<MessageResponse>(response,HttpStatus.NOT_FOUND);
 		
 	}
 }
