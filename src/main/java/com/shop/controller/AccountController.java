@@ -303,7 +303,7 @@ public class AccountController {
 	public ResponseEntity<MessengerUtils> editAccount(Principal user,
 			@RequestBody Profile objProfile
 			){
-		//Check role
+		
 		Account accountCurrent = accountService.getAccountByUsername(user.getName());
 		
 		//Get account by id
@@ -328,7 +328,7 @@ public class AccountController {
 		}
 		
 		account.setProfile(profile);
-		accountService.editAccount(accountCurrent);
+		accountService.editAccount(account);
 		
 		MessengerUtils msg = new MessengerUtils(true, "Edited account id " + accountCurrent.getId());
 		return new ResponseEntity<MessengerUtils>(msg, HttpStatus.OK);
