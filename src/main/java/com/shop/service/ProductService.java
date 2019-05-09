@@ -5,8 +5,8 @@ import java.util.List;
 import com.shop.entities.Product;
 
 public interface ProductService {
-	//Get top 10 product
-	List<Product> getTop10Product();
+	//Get top 12 product
+	List<Product> getTop12Product();
 	
 	//Get count all products
 	int getCountProducts();
@@ -45,4 +45,10 @@ public interface ProductService {
 	
 	//Edit product
 	Product editProduct(Product objProduct);
+	
+	//Top 12 product buy
+	List<Product> getTop12ProductBuy();
+	
+	//Increase count buy product id
+	void IncreaseCountBuyProductById(int idProduct);
 }

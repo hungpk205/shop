@@ -213,12 +213,17 @@ public class TransactionController {
 	//Add transaction
 	@PostMapping("add")
 	public ResponseEntity<CreateResponse> add(Principal user, @RequestBody TransactionRequest transactionRequest){
-		//Get infor from cart
+		//Get information from cart
 		Account accountLogin = accountService.getAccountByUsername(user.getName());
 		
 		Transaction newTransaction = new Transaction();
 		
 		List<Cart> listCart = cartService.getCartOfAccount(accountLogin.getId());
+		
+		if (listCart.isEmpty()) {
+			CreateResponse response = new CreateResponse("Not found cart");
+			return new ResponseEntity<CreateResponse>(response, HttpStatus.NOT_FOUND);
+		}
 		
 		float amount = 0;
 		for (Cart cart : listCart) {
@@ -247,12 +252,18 @@ public class TransactionController {
 		}
 		newTransaction.setOrder(listOrderAdd);
 		
-		System.out.println("Size: " + listOrderAdd.size());
+		
 		
 		Timestamp created_at = new Timestamp(System.currentTimeMillis());
 		newTransaction.setCreated_at(created_at);
 		
 		Transaction transactionAdd = transactionService.addTransaction(newTransaction);
+		
+		//Increase count buy product
+		for (Cart cart: listCart) {
+			productService.IncreaseCountBuyProductById(cart.getProduct().getId());
+		}
+		
 		
 		//Clear cart
 		cartService.DeleteCartOfAccount(accountLogin.getId());

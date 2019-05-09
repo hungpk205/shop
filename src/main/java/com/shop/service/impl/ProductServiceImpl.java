@@ -58,8 +58,8 @@ public class ProductServiceImpl implements ProductService {
 	}
 
 	@Override
-	public List<Product> getTop10Product() {
-		return productRepo.getTop10Product();
+	public List<Product> getTop12Product() {
+		return productRepo.getTop12Product();
 	}
 
 	@Override
@@ -85,6 +85,16 @@ public class ProductServiceImpl implements ProductService {
 	@Override
 	public List<Product> getProductOfCategoryShop(int idCat, int idShop) {
 		return productRepo.getProductInCategoryOfShop(idCat, idShop);
+	}
+
+	@Override
+	public List<Product> getTop12ProductBuy() {
+		return productRepo.getTop12ProductBuy();
+	}
+
+	@Override
+	public void IncreaseCountBuyProductById(int idProduct) {
+		productRepo.IncreaseCountBuy(idProduct);
 	}
 
 }

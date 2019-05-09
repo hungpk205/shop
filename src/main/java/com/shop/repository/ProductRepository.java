@@ -2,6 +2,8 @@ package com.shop.repository;
 
 import java.util.List;
 
+import javax.transaction.Transactional;
+
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -30,8 +32,11 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
 	@Query(value = "SELECT * FROM products WHERE active = 1 AND id_category =:idCat", nativeQuery = true)
 	List<Product> getListProductByIdCategory(@Param("idCat") int idCat);
  
-	@Query(value = "SELECT * FROM products WHERE active = 1 ORDER BY created_at DESC LIMIT 0,10", nativeQuery = true)
-	List<Product> getTop10Product();
+	@Query(value = "SELECT * FROM products WHERE active = 1 ORDER BY created_at DESC LIMIT 0,12", nativeQuery = true)
+	List<Product> getTop12Product();
+	
+	@Query(value = "SELECT * FROM products WHERE active = 1 ORDER BY count_buy DESC LIMIT 0,12", nativeQuery = true)
+	List<Product> getTop12ProductBuy();
 	
 	//Get list product by id account
 	@Query(value = "SELECT * FROM products AS p INNER JOIN accounts AS ac ON p.created_by = ac.id WHERE p.active = 1 AND ac.id =:id", nativeQuery = true)
@@ -46,5 +51,13 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
 			+ " INNER JOIN categories AS c ON p.id_category = c.id WHERE p.active = 1 AND ac.id =:idShop AND c.id = :idCat", nativeQuery = true)
 	List<Product> getProductInCategoryOfShop(@Param("idCat") int idCat, @Param("idShop") int idShop);
 	
+	//Get product by id
+	@Query(value = "SELECT * FROM products WHERE id =:idProduct", nativeQuery = true)
+	Product GetProductById(@Param("idProduct") int idProduct);
 	
+	//Increase count buy
+	@Modifying
+	@Transactional
+	@Query(value = "UPDATE products SET count_buy = count_buy + 1 WHERE id =:idProduct", nativeQuery = true)
+	void IncreaseCountBuy(@Param("idProduct") int idProduct);
 }

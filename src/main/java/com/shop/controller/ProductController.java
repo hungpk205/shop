@@ -30,6 +30,7 @@ import com.shop.entities.Product;
 import com.shop.entities.Role;
 import com.shop.request.ProductRequest;
 import com.shop.response.CreateResponse;
+import com.shop.response.MessageResponse;
 import com.shop.service.AccountService;
 import com.shop.service.CategoryService;
 import com.shop.service.ProductService;
@@ -52,6 +53,39 @@ public class ProductController {
 	public ResponseEntity<List<ProductDTO>> getAll(){
 		List<Product> listProduct = productService.getAll();
 		
+		List<Product> listProductActive = new ArrayList<>();
+		for (Product product : listProduct) {
+			if (product.getActive() == 1) {
+				listProductActive.add(product);
+			}
+		}
+		
+		List<ProductDTO> listProductDTO = new ArrayList<>();
+		
+		for (Product product : listProductActive) {
+			List<String> listImage = new ArrayList<>();
+			String[] arrImage = product.getPicture().split(",");
+			for (int i = 0; i < arrImage.length; i++) {
+				listImage.add(arrImage[i]);
+			}
+			String time = new SimpleDateFormat("dd/MM/yyyy").format(product.getCreated_at());
+			ProductDTO productDTO = new ProductDTO("success",product.getId(), product.getName(), product.getCategory().getName(), product.getDescription(), product.getDetail(), listImage, product.getQuantity(), product.getPrice(), product.getCount_buy(), product.getAccount().getUsername(), time);
+			listProductDTO.add(productDTO);
+			
+		}
+		
+		if (listProduct.isEmpty()) {
+			return new ResponseEntity<List<ProductDTO>>(HttpStatus.NO_CONTENT);
+		} else {
+			return new ResponseEntity<List<ProductDTO>>(listProductDTO, HttpStatus.OK);
+		}
+	}
+	
+	//Top new product
+	@GetMapping("view/top")
+	public ResponseEntity<?> getTop12Product(){
+		List<Product> listProduct = productService.getTop12Product();
+		
 		List<ProductDTO> listProductDTO = new ArrayList<>();
 		
 		for (Product product : listProduct) {
@@ -73,40 +107,40 @@ public class ProductController {
 		}
 	}
 	
-	//
-	@GetMapping("view/top")
-	public ResponseEntity<List<ProductDTO>> getTop10Product(){
-		List<Product> listProduct = productService.getTop10Product();
-		
-		List<ProductDTO> listProductDTO = new ArrayList<>();
-		
-		for (Product product : listProduct) {
-			List<String> listImage = new ArrayList<>();
-			String[] arrImage = product.getPicture().split(",");
-			for (int i = 0; i < arrImage.length; i++) {
-				listImage.add(arrImage[i]);
-			}
-			String time = new SimpleDateFormat("dd/MM/yyyy").format(product.getCreated_at());
-			ProductDTO productDTO = new ProductDTO("success",product.getId(), product.getName(), product.getCategory().getName(), product.getDescription(), product.getDetail(), listImage, product.getQuantity(), product.getPrice(), product.getCount_buy(), product.getAccount().getUsername(), time);
-			listProductDTO.add(productDTO);
+	
+	//Top buy product
+		@GetMapping("view/top-buy")
+		public ResponseEntity<?> getTop12ProductBuy(){
+			List<Product> listProduct = productService.getTop12ProductBuy();
 			
+			List<ProductDTO> listProductDTO = new ArrayList<>();
+			
+			for (Product product : listProduct) {
+				List<String> listImage = new ArrayList<>();
+				String[] arrImage = product.getPicture().split(",");
+				for (int i = 0; i < arrImage.length; i++) {
+					listImage.add(arrImage[i]);
+				}
+				String time = new SimpleDateFormat("dd/MM/yyyy").format(product.getCreated_at());
+				ProductDTO productDTO = new ProductDTO("success",product.getId(), product.getName(), product.getCategory().getName(), product.getDescription(), product.getDetail(), listImage, product.getQuantity(), product.getPrice(), product.getCount_buy(), product.getAccount().getUsername(), time);
+				listProductDTO.add(productDTO);
+				
+			}
+			
+			if (listProduct.isEmpty()) {
+				return new ResponseEntity<List<ProductDTO>>(HttpStatus.NO_CONTENT);
+			} else {
+				return new ResponseEntity<List<ProductDTO>>(listProductDTO, HttpStatus.OK);
+			}
 		}
-		
-		if (listProduct.isEmpty()) {
-			return new ResponseEntity<List<ProductDTO>>(HttpStatus.NO_CONTENT);
-		} else {
-			return new ResponseEntity<List<ProductDTO>>(listProductDTO, HttpStatus.OK);
-		}
-	}
 	
 	//Get product by id
 	@GetMapping("view/{id}")
-	public ResponseEntity<ProductDTO> getProduct(@PathVariable("id") int id){
+	public ResponseEntity<?> getProduct(@PathVariable("id") int id){
 		//Check product
 		if (!productService.CheckExistProduct(id)) {
-			ProductDTO productDTO = new ProductDTO();
-			productDTO.setMessage("fail: not found");
-			return new ResponseEntity<ProductDTO>(productDTO, HttpStatus.NOT_FOUND);
+			MessageResponse response = new MessageResponse("Not exist product id " + id);
+			return new ResponseEntity<MessageResponse>(response, HttpStatus.NOT_FOUND);
 			
 		} else {
 			Product objProduct = productService.getOneProduct(id);
