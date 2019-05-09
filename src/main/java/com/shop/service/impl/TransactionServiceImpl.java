@@ -35,4 +35,9 @@ public class TransactionServiceImpl implements TransactionService {
 		return transactionRepo.getTransactionByIdTransactionOfAccount(id_account, id_transaction);
 	}
 
+	@Override
+	public void DeleteTransactionOfAccount(Transaction transaction) {
+		transactionRepo.delete(transaction);
+	}
+
 }

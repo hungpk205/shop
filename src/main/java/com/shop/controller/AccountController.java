@@ -28,12 +28,15 @@ import com.shop.entities.Permission;
 import com.shop.entities.Product;
 import com.shop.entities.Profile;
 import com.shop.entities.Role;
+import com.shop.entities.Transaction;
 import com.shop.request.RegisterRequest;
 import com.shop.response.RegisterResponse;
 import com.shop.service.AccountService;
+import com.shop.service.CartService;
 import com.shop.service.PermissionService;
 import com.shop.service.ProductService;
 import com.shop.service.RoleService;
+import com.shop.service.TransactionService;
 import com.shop.utils.MessengerUtils;
 
 @RestController
@@ -50,7 +53,10 @@ public class AccountController {
 	private ProductService productService;
 	@Autowired
 	private PasswordEncoder encoderPassword;
-	
+	@Autowired
+	private CartService cartService;
+	@Autowired
+	private TransactionService transactionService;
 	
 	
 	//Add
@@ -287,40 +293,16 @@ public class AccountController {
 	
 	//Edit Account Profile
 	@PutMapping("edit")
-	public ResponseEntity<MessengerUtils> editAccount(Principal user, @PathVariable("id") int id,
+	public ResponseEntity<MessengerUtils> editAccount(Principal user,
 			@RequestBody Profile objProfile
 			){
 		//Check role
 		Account accountCurrent = accountService.getAccountByUsername(user.getName());
-		Set<Role> roles = accountCurrent.getRole();
-		boolean havePermission = false;
-		
-		//Admin can edit everyone
-		for (Role role : roles) {
-			if (role.getName().equals("ADMIN")) {
-				havePermission = true;
-				break;
-			}
-		}
-		
-		//User current can edit
-		if (accountCurrent.getId().equals(id)) {
-			havePermission = true;
-		}
-		
-		if (!havePermission) {
-			MessengerUtils msg = new MessengerUtils(false, "Not have role");
-			return new ResponseEntity<MessengerUtils>(msg, HttpStatus.BAD_REQUEST);
-		}
 		
 		//Get account by id
-		Account account = accountService.getAccountById(id);
-		if (account == null) {
-			MessengerUtils msg = new MessengerUtils(false, "Not found account id " + id);
-			return new ResponseEntity<MessengerUtils>(msg, HttpStatus.NOT_FOUND);
-		}
+		Account account = accountService.getAccountById(accountCurrent.getId());
 		
-		Profile profile = account.getProfile();
+		Profile profile = accountCurrent.getProfile();
 		
 		if (objProfile.getFullname() != null && !objProfile.getFullname().equals("")) {
 			profile.setFullname(objProfile.getFullname());
@@ -339,9 +321,9 @@ public class AccountController {
 		}
 		
 		account.setProfile(profile);
-		accountService.editAccount(account);
+		accountService.editAccount(accountCurrent);
 		
-		MessengerUtils msg = new MessengerUtils(true, "Edited account id " + id);
+		MessengerUtils msg = new MessengerUtils(true, "Edited account id " + accountCurrent.getId());
 		return new ResponseEntity<MessengerUtils>(msg, HttpStatus.OK);
 		
 	}
@@ -375,9 +357,16 @@ public class AccountController {
 		//Delete product created by account
 		List<Product> listProduct = productService.getProductByIdAccount(id);
 		for (Product product : listProduct) {
-			productService.deleteProductById(product.getId());
+			productService.changeActive(product);
 		}
 		
+		//Delete cart
+		cartService.DeleteCartOfAccount(id);
+		//Delete transaction
+		List<Transaction> listTransaction = transactionService.getTransactionOfAccount(id);
+		for (Transaction transaction : listTransaction) {
+			transactionService.DeleteTransactionOfAccount(transaction);
+		}
 		
 		//Delete account
 		accountService.deleteAccount(objAccount);

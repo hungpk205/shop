@@ -16,4 +16,7 @@ public interface TransactionService {
 	
 	//Add a transaction
 	Transaction addTransaction(Transaction objTransaction);
+	
+	//Delete transaction of account
+	void DeleteTransactionOfAccount(Transaction transaction);
 }
