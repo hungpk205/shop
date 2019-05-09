@@ -104,6 +104,12 @@ public class CartController {
 			MessageResponse response = new MessageResponse("fail, not found product");
 			return new ResponseEntity<MessageResponse>(response, HttpStatus.BAD_REQUEST);
 		}
+		//Check exist product in cart
+		if (cartService.getCartByProduct(accountLogin.getId(), cartRequest.getId_product()) != null) {
+			MessageResponse response = new MessageResponse("fail, existed product in cart");
+			return new ResponseEntity<MessageResponse>(response, HttpStatus.BAD_REQUEST);
+		}
+		
 		
 		int quantity = 0;
 		float amount = 0;
