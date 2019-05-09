@@ -44,7 +44,7 @@ public class CategoryController {
 	
 	
 	//Get all categories
-	@GetMapping("all")
+	@GetMapping("view/all")
 	public ResponseEntity<List<Category>> getAll(){
 		List<Category> listCat = categoryService.getAllCategory();
 		if (listCat.size() > 0) {
@@ -55,7 +55,7 @@ public class CategoryController {
 	}
 	
 	//Get category by id
-	@GetMapping("{id}")
+	@GetMapping("view/{id}")
 	public ResponseEntity<Category> getCategory(@PathVariable("id") int id){
 		 Category objCat = categoryService.getCateogryById(id);
 		 if (objCat == null) {

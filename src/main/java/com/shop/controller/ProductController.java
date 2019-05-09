@@ -48,7 +48,7 @@ public class ProductController {
 	@Autowired
 	private AccountService accountService;
 	
-	@GetMapping("all")
+	@GetMapping("view/all")
 	public ResponseEntity<List<ProductDTO>> getAll(){
 		List<Product> listProduct = productService.getAll();
 		
@@ -74,7 +74,7 @@ public class ProductController {
 	}
 	
 	//
-	@GetMapping("top")
+	@GetMapping("view/top")
 	public ResponseEntity<List<ProductDTO>> getTop10Product(){
 		List<Product> listProduct = productService.getTop10Product();
 		
@@ -100,7 +100,7 @@ public class ProductController {
 	}
 	
 	//Get product by id
-	@GetMapping("{id}")
+	@GetMapping("view/{id}")
 	public ResponseEntity<ProductDTO> getProduct(@PathVariable("id") int id){
 		//Check product
 		if (!productService.CheckExistProduct(id)) {
