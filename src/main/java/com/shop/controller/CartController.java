@@ -176,7 +176,7 @@ public class CartController {
 	}
 	
 	//Delete a product in cart
-	@DeleteMapping("delete")
+	@PostMapping("delete")
 	public ResponseEntity<MessengerUtils> deleteItemCart(Principal user, @RequestBody CartRequest cartRequest){
 		Account accountLogin = accountService.getAccountByUsername(user.getName());
 		
