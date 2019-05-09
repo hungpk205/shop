@@ -308,7 +308,7 @@ public class ProductController {
 	
 	//Edit product
 	@PutMapping("{id}")
-	public ResponseEntity<MessengerUtils> editProduct(Principal user ,@PathVariable("id") int id_product, @RequestBody Product objProduct){
+	public ResponseEntity<MessengerUtils> editProduct(Principal user ,@PathVariable("id") int id_product, @RequestBody ProductRequest objProduct){
 		
 		if(!productService.CheckExistProduct(id_product)) {
 			MessengerUtils msg = new MessengerUtils(false,"Not found product id " + id_product);
@@ -355,15 +355,13 @@ public class ProductController {
 			if (objProduct.getPrice() > 0) {
 				product.setPrice(objProduct.getPrice());
 			}
-			if (objProduct.getCategory() != null) {
-				if (objProduct.getCategory().getId() > 0) {
-					if (categoryService.CheckExitCategoryById(objProduct.getCategory().getId())) {
-						Category objCategory = categoryService.getCateogryById(objProduct.getCategory().getId());
-						product.setCategory(objCategory);	
-					} else {
-						MessengerUtils response = new MessengerUtils(false,"Not found category id " + objProduct.getCategory().getId());
-						return new ResponseEntity<MessengerUtils>(response, HttpStatus.NOT_FOUND);
-					}
+			if (objProduct.getId_category() > 0) {
+				if (categoryService.CheckExitCategoryById(objProduct.getId_category())) {
+					Category objCategory = categoryService.getCateogryById(objProduct.getId_category());
+					product.setCategory(objCategory);	
+				} else {
+					MessengerUtils response = new MessengerUtils(false,"Not found category id " + objProduct.getId_category());
+					return new ResponseEntity<MessengerUtils>(response, HttpStatus.NOT_FOUND);
 				}
 			}
 			
