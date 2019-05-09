@@ -71,8 +71,9 @@ public class CartController {
 			String[] arrImage = listPicture.split(",");
 			if (arrImage.length != 0) {
 				image = arrImage[0];
-			} 
-			CartDTO cartDTO = new CartDTO(cart.getProduct().getId(), cart.getProduct().getName(), image, cart.getQuantity(), cart.getAmount());
+			}
+			
+			CartDTO cartDTO = new CartDTO(cart.getProduct().getId(), cart.getProduct().getName(), cart.getProduct().getPrice(), image, cart.getQuantity(), cart.getAmount());
 			listCartDTO.add(cartDTO);
 		}
 		
