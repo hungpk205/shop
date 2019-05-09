@@ -119,8 +119,14 @@ public class CartController {
 		}
 		//Check exist product in cart
 		if (cartService.getCartByProduct(accountLogin.getId(), cartRequest.getId_product()) != null) {
-			MessageResponse response = new MessageResponse("fail, existed product in cart");
-			return new ResponseEntity<MessageResponse>(response, HttpStatus.BAD_REQUEST);
+			//Update quantity
+			Cart cart = cartService.getCartByProduct(accountLogin.getId(), cartRequest.getId_product());
+			cart.setQuantity(cartRequest.getQuantity());
+			cart.setAmount(cartRequest.getQuantity() * product.getPrice());
+			cartService.updateCart(cart);
+			
+			MessageResponse response = new MessageResponse("success");
+			return new ResponseEntity<MessageResponse>(response, HttpStatus.OK);
 		}
 		
 		
