@@ -186,7 +186,7 @@ public class ProductController {
 	}
 	
 	//Get product by id category
-	@GetMapping("category/{id}")
+	@GetMapping("view/category/{id}")
 	public ResponseEntity<List<ProductDTO>> GetProductByIdCategory(@PathVariable("id") int id){
 		List<Product> listProduct = productService.getProductOfCategory(id);
 		
