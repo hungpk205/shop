@@ -82,7 +82,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     "/**/*.js")
                     .permitAll()
                  .antMatchers("/api/login-admin","/api/login-shop","/api/login-customer", "/api/account/register", "/api/account/register/shop", "/api/category/view/**",
-                		 "/api/product/view/**")
+                		 "/api/product/view/**", "/api/upload", "/api/uploadMultipart")
                  	.permitAll()
                  .anyRequest()
                  	.authenticated();
