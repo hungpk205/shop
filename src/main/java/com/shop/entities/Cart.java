@@ -12,6 +12,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 @Entity
 @Table(name = "carts")
 public class Cart {
@@ -23,6 +25,7 @@ public class Cart {
 	@JoinColumn(name = "id_account")
 	private Account account;
 	
+	@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@JoinColumn(name = "id_product")
 	private Product product;

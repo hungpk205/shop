@@ -11,6 +11,7 @@ public class AccountDTO {
 	private Profile profile;
 	private String role;
 	private List<String> permission;
+	private int product_cart;
 	
 	public int getId() {
 		return id;
@@ -49,15 +50,24 @@ public class AccountDTO {
 	public void setPermission(List<String> permission) {
 		this.permission = permission;
 	}
-	public AccountDTO(int id, String username, int status, Profile profile) {
+	public int getProduct_cart() {
+		return product_cart;
+	}
+	public void setProduct_cart(int product_cart) {
+		this.product_cart = product_cart;
+	}
+	
+	public AccountDTO(int id, String username, int status, Profile profile, int product_cart) {
 		super();
 		this.id = id;
 		this.username = username;
 		this.status = status;
 		this.profile = profile;
+		this.product_cart = product_cart;
 	}
 	public AccountDTO() {
 		super();
 	}
+
 	
 }

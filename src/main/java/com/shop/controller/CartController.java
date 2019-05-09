@@ -1,6 +1,7 @@
 package com.shop.controller;
 
 import java.security.Principal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.shop.dto.CartDTO;
 import com.shop.entities.Account;
 import com.shop.entities.Cart;
 import com.shop.entities.Product;
@@ -56,9 +58,19 @@ public class CartController {
 			return new ResponseEntity<MessageResponse>(response, HttpStatus.BAD_REQUEST);
 		}
 		
-		
 		List<Cart> listCart = cartService.getCartOfAccount(accountLogin.getId());
-		return new ResponseEntity<List<Cart>>(listCart, HttpStatus.OK);
+		if (listCart.isEmpty()) {
+			MessageResponse response = new MessageResponse("No have cart");
+			return new ResponseEntity<MessageResponse>(response, HttpStatus.NOT_FOUND);
+		}
+		List<CartDTO> listCartDTO = new ArrayList<>();
+		for (Cart cart : listCart) {
+			CartDTO cartDTO = new CartDTO(cart.getProduct().getId(), cart.getProduct().getName(), cart.getQuantity(), cart.getAmount());
+			listCartDTO.add(cartDTO);
+		}
+		
+		
+		return new ResponseEntity<List<CartDTO>>(listCartDTO, HttpStatus.OK);
 	}
 	
 	//Add cart of account

@@ -65,6 +65,7 @@ public class Product {
 	@JoinColumn(name = "id_category")
 	private Category category;
 	
+	
 	@OneToOne(mappedBy = "product")
 	private Cart cart;
 

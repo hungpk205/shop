@@ -204,7 +204,8 @@ public class AccountController {
 		
 		List<AccountDTO> listAccountDTO = new ArrayList<>();
 		for (Account account : listAccount) {
-			AccountDTO objAccountDTO = new AccountDTO(account.getId(), account.getUsername(), account.getStatus(), account.getProfile());
+			int product_cart = cartService.getCartOfAccount(account.getId()).size();
+			AccountDTO objAccountDTO = new AccountDTO(account.getId(), account.getUsername(), account.getStatus(), account.getProfile(),product_cart);
 			for(Role role :account.getRole()) {
 				objAccountDTO.setRole(role.getName());
 			}
@@ -251,7 +252,8 @@ public class AccountController {
 		
 		Account account = accountService.getAccountById(id);
 		if (account != null) {
-			AccountDTO accountDTO = new AccountDTO(account.getId(),account.getUsername(), account.getStatus(), account.getProfile());
+			int product_cart = cartService.getCartOfAccount(account.getId()).size();
+			AccountDTO accountDTO = new AccountDTO(account.getId(),account.getUsername(), account.getStatus(), account.getProfile(), product_cart);
 			for (Role role : account.getRole()) {
 				accountDTO.setRole(role.getName());
 			}
@@ -273,7 +275,10 @@ public class AccountController {
 	@GetMapping("current")
 	public ResponseEntity<AccountDTO> getCurrentAccount(Principal user){
 		Account accountLogin = accountService.getAccountByUsername(user.getName());
-		AccountDTO accountDTO = new AccountDTO(accountLogin.getId(),accountLogin.getUsername(), accountLogin.getStatus(), accountLogin.getProfile());
+		
+		int product_cart = cartService.getCartOfAccount(accountLogin.getId()).size();
+		
+		AccountDTO accountDTO = new AccountDTO(accountLogin.getId(),accountLogin.getUsername(), accountLogin.getStatus(), accountLogin.getProfile(),product_cart);
 		
 		Set<Role> roles = accountLogin.getRole();
 		for (Role role : roles) {
@@ -286,6 +291,8 @@ public class AccountController {
 		}
 		accountDTO.setPermission(listPermission);
 		
+		//Get number product in cart
+		accountDTO.setProduct_cart(cartService.getCartOfAccount(accountLogin.getId()).size());
 		
 		
 		return new ResponseEntity<AccountDTO>(accountDTO, HttpStatus.OK);
