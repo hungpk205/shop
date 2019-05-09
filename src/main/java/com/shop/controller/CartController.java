@@ -22,6 +22,7 @@ import com.shop.entities.Cart;
 import com.shop.entities.Product;
 import com.shop.entities.Role;
 import com.shop.request.CartRequest;
+import com.shop.response.CartResponse;
 import com.shop.response.MessageResponse;
 import com.shop.service.AccountService;
 import com.shop.service.CartService;
@@ -63,7 +64,9 @@ public class CartController {
 			MessageResponse response = new MessageResponse("No have cart");
 			return new ResponseEntity<MessageResponse>(response, HttpStatus.NOT_FOUND);
 		}
+		
 		List<CartDTO> listCartDTO = new ArrayList<>();
+		float total_price = 0;
 		for (Cart cart : listCart) {
 			//Get first image of product
 			String image = "";
@@ -75,10 +78,12 @@ public class CartController {
 			
 			CartDTO cartDTO = new CartDTO(cart.getProduct().getId(), cart.getProduct().getName(), cart.getProduct().getPrice(), image, cart.getQuantity(), cart.getAmount());
 			listCartDTO.add(cartDTO);
+			total_price += cart.getAmount();
 		}
 		
+		CartResponse cartResponse =  new CartResponse(listCartDTO, total_price);
 		
-		return new ResponseEntity<List<CartDTO>>(listCartDTO, HttpStatus.OK);
+		return new ResponseEntity<CartResponse>(cartResponse, HttpStatus.OK);
 	}
 	
 	//Add cart of account

@@ -7,6 +7,7 @@ public class CartDTO {
 	private float price;
 	private int quantity;
 	private float amount;
+	
 	public int getId_product() {
 		return id_product;
 	}
