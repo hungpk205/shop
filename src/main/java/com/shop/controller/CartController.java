@@ -121,8 +121,10 @@ public class CartController {
 		if (cartService.getCartByProduct(accountLogin.getId(), cartRequest.getId_product()) != null) {
 			//Update quantity
 			Cart cart = cartService.getCartByProduct(accountLogin.getId(), cartRequest.getId_product());
-			cart.setQuantity(cartRequest.getQuantity());
-			cart.setAmount(cartRequest.getQuantity() * product.getPrice());
+			int quantity = cart.getQuantity() + cartRequest.getQuantity();
+			
+			cart.setQuantity(quantity);
+			cart.setAmount(quantity * product.getPrice());
 			cartService.updateCart(cart);
 			
 			MessageResponse response = new MessageResponse("success");

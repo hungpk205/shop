@@ -12,7 +12,6 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -187,11 +186,12 @@ public class ProductController {
 	
 	//Get product by id category
 	@GetMapping("view/category/{id}")
-	public ResponseEntity<List<ProductDTO>> GetProductByIdCategory(@PathVariable("id") int id){
+	public ResponseEntity<?> GetProductByIdCategory(@PathVariable("id") int id){
 		List<Product> listProduct = productService.getProductOfCategory(id);
 		
 		if(listProduct.isEmpty()) {
-			return new ResponseEntity<List<ProductDTO>>(HttpStatus.NOT_FOUND);
+			MessageResponse response = new MessageResponse("Not found this category id " + id);
+			return new ResponseEntity<MessageResponse>(response,HttpStatus.NOT_FOUND);
 		}
 		
 		List<ProductDTO> listProductDTO = new ArrayList<>();
