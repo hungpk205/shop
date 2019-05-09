@@ -3,6 +3,7 @@ package com.shop.dto;
 public class CartDTO {
 	private int id_product;
 	private String name_product;
+	private String image;
 	private int quantity;
 	private float amount;
 	public int getId_product() {
@@ -29,14 +30,23 @@ public class CartDTO {
 	public void setAmount(float amount) {
 		this.amount = amount;
 	}
-	public CartDTO(int id_product, String name_product, int quantity, float amount) {
+	public String getImage() {
+		return image;
+	}
+	public void setImage(String image) {
+		this.image = image;
+	}
+	
+	public CartDTO(int id_product, String name_product,String image, int quantity, float amount) {
 		super();
 		this.id_product = id_product;
 		this.name_product = name_product;
+		this.image = image;
 		this.quantity = quantity;
 		this.amount = amount;
 	}
 	public CartDTO() {
 		super();
 	}
+	
 }

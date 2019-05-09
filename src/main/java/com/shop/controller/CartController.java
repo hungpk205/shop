@@ -65,7 +65,14 @@ public class CartController {
 		}
 		List<CartDTO> listCartDTO = new ArrayList<>();
 		for (Cart cart : listCart) {
-			CartDTO cartDTO = new CartDTO(cart.getProduct().getId(), cart.getProduct().getName(), cart.getQuantity(), cart.getAmount());
+			//Get first image of product
+			String image = "";
+			String listPicture = cart.getProduct().getPicture();
+			String[] arrImage = listPicture.split(",");
+			if (arrImage.length != 0) {
+				image = arrImage[0];
+			} 
+			CartDTO cartDTO = new CartDTO(cart.getProduct().getId(), cart.getProduct().getName(), image, cart.getQuantity(), cart.getAmount());
 			listCartDTO.add(cartDTO);
 		}
 		
