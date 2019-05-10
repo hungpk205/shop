@@ -116,15 +116,13 @@ public class AccountController {
 	//Register mobile app
 	
 	@PostMapping("register")
-	public ResponseEntity<RegisterResponse> register(@RequestParam("username") String username, @RequestParam("password") String password){
-		if (accountService.getAccountByUsername(username) == null) {
+	public ResponseEntity<RegisterResponse> register(@RequestBody RegisterRequest registerRequest){
+		if (accountService.getAccountByUsername(registerRequest.getUsername()) == null) {
 			
 			//Encode password
-			String encodePassword = encoderPassword.encode(password);
+			String encodePassword = encoderPassword.encode(registerRequest.getPassword());
 			
-			Account account = new Account(null, username, encodePassword, 1);
-			
-			
+			Account account = new Account(null, registerRequest.getUsername(), encodePassword, 1);
 			
 			Role role = roleService.getRoleByName("CUSTOMER");
 			account.getRole().add(role);
@@ -132,12 +130,16 @@ public class AccountController {
 			account.setPermission(null);
 			Account accountSave =  accountService.addAccount(account);
 			
+			Profile profile = accountSave.getProfile();
+			profile.setFullname(registerRequest.getFullname());
+			profile.setEmail(registerRequest.getEmail());
+			accountService.editAccount(accountSave);
 			
 			RegisterResponse response = new RegisterResponse("success", accountSave.getId());
 			return new ResponseEntity<RegisterResponse>(response, HttpStatus.OK);
 			
 		} else {
-			RegisterResponse response = new RegisterResponse("fail");
+			RegisterResponse response = new RegisterResponse("fail, existed username " + registerRequest.getUsername());
 			return new ResponseEntity<RegisterResponse>(response, HttpStatus.NOT_ACCEPTABLE);
 		}
 	}
@@ -150,6 +152,7 @@ public class AccountController {
 			String password = encoderPassword.encode(registerRequest.getPassword());
 			
 			Account account = new Account(null, registerRequest.getUsername(), password, 1);
+			
 			
 			Role role = roleService.getRoleByName("SHOP OWNER");
 			account.getRole().add(role);
@@ -170,12 +173,16 @@ public class AccountController {
 			account.setPermission(permission);
 			Account accountSave =  accountService.addAccount(account);
 			
+			Profile profile = accountSave.getProfile();
+			profile.setFullname(registerRequest.getFullname());
+			profile.setEmail(registerRequest.getEmail());
+			accountService.editAccount(accountSave);
 			
 			RegisterResponse response = new RegisterResponse("success", accountSave.getId());
 			return new ResponseEntity<RegisterResponse>(response, HttpStatus.OK);
 			
 		} else {
-			RegisterResponse response = new RegisterResponse("fail");
+			RegisterResponse response = new RegisterResponse("fail, existed username " + registerRequest.getUsername());
 			return new ResponseEntity<RegisterResponse>(response, HttpStatus.NOT_ACCEPTABLE);
 		}
 	}
