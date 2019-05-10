@@ -4,6 +4,7 @@ public class OrderInformation {
 	private int id;
 	private SellerDTO seller;
 	private String product;
+	private float price;
 	private int quantity;
 	private float amount;
 	private int status;
@@ -44,12 +45,19 @@ public class OrderInformation {
 	public void setSeller(SellerDTO seller) {
 		this.seller = seller;
 	}
+	public float getPrice() {
+		return price;
+	}
+	public void setPrice(float price) {
+		this.price = price;
+	}
 	
-	public OrderInformation(int id, SellerDTO seller, String product, int quantity, float amount, int status) {
+	public OrderInformation(int id, SellerDTO seller, String product,float price, int quantity, float amount, int status) {
 		super();
 		this.id = id;
 		this.seller = seller;
 		this.product = product;
+		this.price = price;
 		this.quantity = quantity;
 		this.amount = amount;
 		this.status = status;
@@ -57,5 +65,6 @@ public class OrderInformation {
 	public OrderInformation() {
 		super();
 	}
+	
 	
 }

@@ -106,7 +106,7 @@ public class TransactionController {
 				for (Order order : listOrder) {
 					SellerDTO seller = new SellerDTO(order.getProduct().getAccount().getProfile().getFullname(), order.getProduct().getAccount().getProfile().getPhone(), order.getProduct().getAccount().getProfile().getEmail(), order.getProduct().getAccount().getProfile().getAddress());
 					
-					OrderInformation orderInfor = new OrderInformation(order.getId(), seller ,order.getProduct().getName(), order.getQuantity(), order.getAmount(), order.getStatus());
+					OrderInformation orderInfor = new OrderInformation(order.getId(), seller ,order.getProduct().getName(), order.getProduct().getPrice(), order.getQuantity(), order.getAmount(), order.getStatus());
 					
 					listOrderInfor.add(orderInfor);
 				}
@@ -159,7 +159,7 @@ public class TransactionController {
 				for (Order order : listOrder) {
 					SellerDTO seller = new SellerDTO(order.getProduct().getAccount().getProfile().getFullname(), order.getProduct().getAccount().getProfile().getPhone(), order.getProduct().getAccount().getProfile().getEmail(), order.getProduct().getAccount().getProfile().getAddress());
 					
-					OrderInformation orderInfor = new OrderInformation(order.getId(), seller ,order.getProduct().getName(), order.getQuantity(), order.getAmount(), order.getStatus());
+					OrderInformation orderInfor = new OrderInformation(order.getId(), seller ,order.getProduct().getName(), order.getProduct().getPrice(), order.getQuantity(), order.getAmount(), order.getStatus());
 					
 					listOrderInfor.add(orderInfor);
 				}
@@ -197,7 +197,7 @@ public class TransactionController {
 		for (Order order : listOrder) {
 			SellerDTO seller = new SellerDTO(order.getProduct().getAccount().getProfile().getFullname(), order.getProduct().getAccount().getProfile().getPhone(), order.getProduct().getAccount().getProfile().getEmail(), order.getProduct().getAccount().getProfile().getAddress());
 			
-			OrderInformation orderInfor = new OrderInformation(order.getId(), seller ,order.getProduct().getName(), order.getQuantity(), order.getAmount(), order.getStatus());
+			OrderInformation orderInfor = new OrderInformation(order.getId(), seller ,order.getProduct().getName(), order.getProduct().getPrice(), order.getQuantity(), order.getAmount(), order.getStatus());
 			
 			listOrderInfor.add(orderInfor);
 		}
