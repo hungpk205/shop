@@ -97,4 +97,9 @@ public class ProductServiceImpl implements ProductService {
 		productRepo.IncreaseCountBuy(idProduct);
 	}
 
+	@Override
+	public void ReduceQuantityProduct(int id_product, int number) {
+		productRepo.ReduceQuantiyProduct(id_product, number);
+	}
+
 }

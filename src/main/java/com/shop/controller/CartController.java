@@ -117,11 +117,18 @@ public class CartController {
 			MessageResponse response = new MessageResponse("fail, not found product");
 			return new ResponseEntity<MessageResponse>(response, HttpStatus.BAD_REQUEST);
 		}
-		//Check exist product in cart
+		//Check exist product in cart then increase quantity
 		if (cartService.getCartByProduct(accountLogin.getId(), cartRequest.getId_product()) != null) {
+			
 			//Update quantity
 			Cart cart = cartService.getCartByProduct(accountLogin.getId(), cartRequest.getId_product());
 			int quantity = cart.getQuantity() + cartRequest.getQuantity();
+			
+			//Check quantity
+			if (quantity > product.getQuantity()) {
+				MessageResponse response = new MessageResponse("fail, not enought quantiy");
+				return new ResponseEntity<MessageResponse>(response, HttpStatus.BAD_REQUEST);
+			}
 			
 			cart.setQuantity(quantity);
 			cart.setAmount(quantity * product.getPrice());
@@ -137,6 +144,11 @@ public class CartController {
 		if (cartRequest.getQuantity() > 0) {
 			quantity = cartRequest.getQuantity();
 			amount = quantity * product.getPrice();
+		}
+		//Check quantity
+		if (quantity > product.getQuantity()) {
+			MessageResponse response = new MessageResponse("fail, not enought quantiy");
+			return new ResponseEntity<MessageResponse>(response, HttpStatus.BAD_REQUEST);
 		}
 		
 		Cart objCart = new Cart(null, accountLogin, product , quantity, amount);
@@ -169,8 +181,17 @@ public class CartController {
 			return new ResponseEntity<MessageResponse>(response, HttpStatus.BAD_REQUEST);
 		}
 		
-		
 		Product product = productService.getOneProduct(cartRequest.getId_product());
+		if (product.getActive() == 0) {
+			MessageResponse response = new MessageResponse("fail, not found product");
+			return new ResponseEntity<MessageResponse>(response, HttpStatus.BAD_REQUEST);
+		}
+		//Check quantity
+		if(cartRequest.getQuantity() > product.getQuantity()) {
+			MessageResponse response = new MessageResponse("fail, not enought quantiy");
+			return new ResponseEntity<MessageResponse>(response, HttpStatus.BAD_REQUEST);
+		}
+		
 		Cart cart = cartService.getCartByProduct(accountLogin.getId(), cartRequest.getId_product());
 		
 		cart.setQuantity(cartRequest.getQuantity());

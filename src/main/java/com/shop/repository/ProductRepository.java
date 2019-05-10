@@ -60,4 +60,11 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
 	@Transactional
 	@Query(value = "UPDATE products SET count_buy = count_buy + 1 WHERE id =:idProduct", nativeQuery = true)
 	void IncreaseCountBuy(@Param("idProduct") int idProduct);
+	
+	//Reduce quantity product
+	@Modifying
+	@Transactional
+	@Query(value = "UPDATE products SET quantity = quantity - :number WHERE id =:id_product", nativeQuery = true)
+	void ReduceQuantiyProduct(@Param("id_product") int id_product,@Param("number") int number);
+	
 }

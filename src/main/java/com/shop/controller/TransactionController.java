@@ -259,8 +259,14 @@ public class TransactionController {
 		
 		Transaction transactionAdd = transactionService.addTransaction(newTransaction);
 		
-		//Increase count buy product
+		
 		for (Cart cart: listCart) {
+			
+			//Reduce quantity product
+			productService.ReduceQuantityProduct(cart.getProduct().getId(), cart.getQuantity());
+			
+			
+			//Increase count buy product
 			productService.IncreaseCountBuyProductById(cart.getProduct().getId());
 		}
 		

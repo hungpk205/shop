@@ -51,4 +51,7 @@ public interface ProductService {
 	
 	//Increase count buy product id
 	void IncreaseCountBuyProductById(int idProduct);
+	
+	//Reduce quantity
+	void ReduceQuantityProduct(int id_product, int number);
 }
