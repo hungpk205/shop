@@ -25,7 +25,7 @@ public class Cart {
 	@JoinColumn(name = "id_account")
 	private Account account;
 	
-	@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+	//@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@JoinColumn(name = "id_product")
 	private Product product;
