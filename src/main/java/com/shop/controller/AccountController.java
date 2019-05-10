@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -146,7 +147,12 @@ public class AccountController {
 	
 	//Register shop
 	@PostMapping("register/shop")
-	public ResponseEntity<RegisterResponse> registerShop(@Valid @RequestBody RegisterRequest registerRequest){
+	public ResponseEntity<RegisterResponse> registerShop(@Valid @RequestBody RegisterRequest registerRequest, BindingResult br){
+		if (br.hasErrors()) {
+			RegisterResponse response = new RegisterResponse("fail, required fullname, email, username, password");
+			return new ResponseEntity<RegisterResponse>(response, HttpStatus.BAD_REQUEST);
+		}
+		
 		if (accountService.getAccountByUsername(registerRequest.getUsername()) == null) {
 			//Encode password
 			String password = encoderPassword.encode(registerRequest.getPassword());
